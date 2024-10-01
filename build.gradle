@@ -123,6 +123,7 @@ allprojects {
             micronaut "io.micronaut.micrometer:micronaut-micrometer-registry-prometheus"
             micronaut "io.micronaut:micronaut-http-client"
             micronaut "io.micronaut.reactor:micronaut-reactor-http-client"
+            micronaut "io.micronaut.tracing:micronaut-tracing-opentelemetry-http"
 
             // logs
             implementation "org.slf4j:slf4j-api"
@@ -132,6 +133,9 @@ allprojects {
             implementation group: 'org.slf4j', name: 'jul-to-slf4j'
             implementation group: 'org.slf4j', name: 'jcl-over-slf4j'
             implementation group: 'org.fusesource.jansi', name: 'jansi'
+
+            // OTEL
+            implementation "io.opentelemetry:opentelemetry-exporter-otlp"
 
             // jackson
             implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
