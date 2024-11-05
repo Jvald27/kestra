@@ -166,7 +166,7 @@ public class NamespaceFileController {
         ensureNonReadOnly(path);
 
         String tenantId = tenantService.resolveTenant();
-        if(fileContent.getFilename().toLowerCase().endsWith(".zip")) {
+        if (fileContent.getFilename().toLowerCase().endsWith(".zip")) {
             try (ZipInputStream archive = new ZipInputStream(fileContent.getInputStream())) {
                 ZipEntry entry;
                 while ((entry = archive.getNextEntry()) != null) {
@@ -174,11 +174,13 @@ public class NamespaceFileController {
                         continue;
                     }
 
-                    putNamespaceFile(tenantId, namespace, URI.create("/" + entry.getName()), new BufferedInputStream(new ByteArrayInputStream(archive.readAllBytes())));
+                    try (BufferedInputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(archive.readAllBytes()))) {
+                        putNamespaceFile(tenantId, namespace, URI.create("/" + entry.getName()), inputStream);
+                    }
                 }
             }
         } else {
-            try(BufferedInputStream inputStream = new BufferedInputStream(fileContent.getInputStream()) {
+            try (BufferedInputStream inputStream = new BufferedInputStream(fileContent.getInputStream()) {
                 // Done to bypass the wrong available() output of the CompletedFileUpload InputStream
                 @Override
                 public synchronized int available() {
