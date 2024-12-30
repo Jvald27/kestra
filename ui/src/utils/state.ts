@@ -104,7 +104,7 @@ export const STATE = Object.freeze({
         isFailed: true,
     },
     SKIPPED: {
-        name: "CANCELLED",
+        name: "SKIPPED",
         color: "#918BA9",
         colorClass: "gray",
         icon: Cancel,

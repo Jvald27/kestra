@@ -87,6 +87,7 @@ public class Extension extends AbstractExtension {
         filters.put("escapeChar", new EscapeCharFilter());
         filters.put("json", new JsonFilter());
         filters.put("toJson", new ToJsonFilter());
+        filters.put("distinct", new DistinctFilter());
         filters.put("keys", new KeysFilter());
         filters.put("number", new NumberFilter());
         filters.put("urldecode", new UrlDecoderFilter());

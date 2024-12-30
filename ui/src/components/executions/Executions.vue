@@ -42,8 +42,10 @@
                 <KestraFilter
                     prefix="executions"
                     :include="['namespace', 'state', 'scope', 'labels', 'child', 'relative_date', 'absolute_date']"
-                    :refresh="{shown: true, callback: refresh}"
-                    :settings="{shown: true, charts: {shown: true, value: showChart, callback: onShowChartChange}}"
+                    :buttons="{
+                        refresh: {shown: true, callback: refresh},
+                        settings: {shown: true, charts: {shown: true, value: showChart, callback: onShowChartChange}}
+                    }"
                 />
             </template>
 
@@ -245,7 +247,6 @@
 
                         <el-table-column
                             prop="flowRevision"
-                            v-if="displayColumn('flowRevision')"
                             :label="$t('revision')"
                             class-name="shrink"
                         >

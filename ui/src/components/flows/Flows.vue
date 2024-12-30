@@ -13,6 +13,7 @@
                                 id="importFlows"
                                 class="el-input__inner"
                                 type="file"
+                                accept=".zip, .yml, .yaml"
                                 @change="importFlows()"
                                 ref="file"
                             >
@@ -47,7 +48,10 @@
                     <KestraFilter
                         prefix="flows"
                         :include="['namespace', 'scope', 'labels']"
-                        :settings="{shown: true, charts: {shown: true, value: showChart, callback: onShowChartChange}}"
+                        :buttons="{
+                            refresh: {shown: false},
+                            settings: {shown: true, charts: {shown: true, value: showChart, callback: onShowChartChange}}
+                        }"
                     />
                 </template>
 

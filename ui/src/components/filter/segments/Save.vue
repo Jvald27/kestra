@@ -1,6 +1,11 @@
 <template>
     <el-tooltip v-if="disabled" :content="t('filters.save.tooltip')">
-        <el-button disabled :icon="Save" @click="toggle(true)" />
+        <el-button
+            disabled
+            :icon="Save"
+            @click="toggle(true)"
+            class="rounded-0 rounded-end"
+        />
     </el-tooltip>
 
     <KestraIcon
@@ -8,7 +13,11 @@
         :tooltip="$t('filters.save.dialog.heading')"
         placement="bottom"
     >
-        <el-button :icon="Save" @click="toggle(true)" />
+        <el-button
+            :icon="Save"
+            @click="toggle(true)"
+            class="rounded-0 rounded-end"
+        />
     </KestraIcon>
 
     <el-dialog
@@ -31,7 +40,7 @@
                 @keydown.enter.prevent="save()"
             />
         </section>
-        <section class="current-tags">
+        <section class="items">
             <el-tag v-for="(item, index) in current" :key="index" class="m-1">
                 <Label :option="item" />
             </el-tag>
@@ -50,27 +59,28 @@
 </template>
 
 <script setup lang="ts">
-    import {getCurrentInstance, ref} from "vue";
+    import {PropType, getCurrentInstance, ref} from "vue";
     import {ElInput} from "element-plus";
+
+    import {CurrentItem} from "../utils/types";
+
+    import KestraIcon from "../../Kicon.vue";
+    import Label from "../components/Label.vue";
+
+    import {Save} from "../utils/icons.js";
 
     const toast = getCurrentInstance()?.appContext.config.globalProperties.$toast();
 
     import {useI18n} from "vue-i18n";
     const {t} = useI18n({useScope: "global"});
 
-    import KestraIcon from "../../Kicon.vue";
-    import Label from "./Label.vue";
-
-    import Save from "vue-material-design-icons/ContentSaveOutline.vue";
-
     const props = defineProps({
         disabled: {type: Boolean, default: true},
         prefix: {type: String, required: true},
-        current: {type: Object, required: true},
+        current: {type: Object as PropType<CurrentItem[]>, required: true},
     });
 
-    // @ts-expect-error will fix with Milos
-    import {useFilters} from "../useFilters";
+    import {useFilters} from "../composables/useFilters";
     const {getSavedItems, setSavedItems} = useFilters(props.prefix);
 
     const visible = ref(false);
@@ -102,9 +112,6 @@
     };
 </script>
 
-<style lang="scss">
-.current-tags .el-tag {
-    background: var(--bs-border-color) !important;
-    color: var(--bs-gray-900);
-}
+<style scoped lang="scss">
+@import "../styles/filter.scss";
 </style>

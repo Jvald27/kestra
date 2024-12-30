@@ -27,6 +27,7 @@
         border: 1px solid #5BB8FF;
         background-color: #5BB8FF33;
         color: var(--el-color-alert-info);
+        font-size: 0.75rem;
 
         html.dark & {
             color: #A2EFFF;

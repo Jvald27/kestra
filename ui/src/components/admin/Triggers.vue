@@ -11,7 +11,10 @@
                     <KestraFilter
                         prefix="triggers"
                         :include="['namespace', 'trigger_state']"
-                        :refresh="{shown: true, callback: load}"
+                        :buttons="{
+                            refresh: {shown: true, callback: load},
+                            settings: {shown: false}
+                        }"
                     />
                 </template>
                 <template #table>
@@ -472,8 +475,9 @@
                     }
                 })
 
+                if(!this.$route.query.trigger_state?.length) return all;
 
-                const disabled = this.$route.query?.trigger_state?.[0] === "disabled" ? true : false;
+                const disabled = this.$route.query?.trigger_state?.[0] === "DISABLED" ? true : false;
                 return all.filter(trigger => trigger.disabled === disabled);
             },
             visibleColumns() {

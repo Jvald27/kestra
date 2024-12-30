@@ -938,17 +938,37 @@
     "active-slots": "Active slots",
     "behavior": "Behavior",
     "concurrency": "Concurrency",
+    "no-executions-view": {
+        "title": "Start automating with ",
+        "sub_title": "Click on the Execute button to start your first workflow execution.",
+        "guidance_desc": "Need guidance to execute your flow?",
+        "guidance_sub_desc": "Follow the documentation for all the info you need."
+    },    
+    "execution_guide": {
+      "get_started": {
+        "title": "Get Started ⚡",
+        "text": "Follow the Quickstart Guide to install Kestra and start building your first workflows."
+      },
+      "workflow_components": {
+        "title": "Workflow Components",
+        "text": "Get to know the main orchestration components of a Kestra workflow."
+      },
+      "videos_tutorials": {
+        "title": "Video Tutorials",
+        "text": "Get started with our video tutorials."
+      }
+    },
     "concurrency-view": {
       "title_no_limit": "No limits are set for this Flow.",
-      "desc_no_limit": "Read more about <a href=\"https://kestra.io/docs/workflow-components/concurrency\" target=\"_blank\">Concurrency Limits</a> in our documentation."
+      "desc_no_limit": "Read more about <strong><a href=\"https://kestra.io/docs/workflow-components/concurrency\" target=\"_blank\">Concurrency Limits</a></strong> in our documentation."
     },
     "dependency-view": {
       "title_no_deps": "No dependencies are set for this Flow.",
       "desc_no_deps": "Read more about <a href=\"https://kestra.io/docs/ui/flows#dependencies\" target=\"_blank\">Flow Dependencies</a> in our documentation."
     },
     "triggers-view": {
-      "title_no_triggers": "Your flow does't have any Triggers.",
-      "desc_no_triggers": "Read more about <a href=\"https://kestra.io/docs/workflow-components/triggers\" target=\"_blank\">Triggers</a> in our documentation."
+      "title_no_triggers": "Your flow doesn't have any Triggers.",
+      "desc_no_triggers": "Read more about <strong><a href=\"https://kestra.io/docs/workflow-components/triggers\" target=\"_blank\">Triggers</a></strong> in our documentation."
     },
     "open sidebar": "open sidebar",
     "close sidebar": "close sidebar",
@@ -961,12 +981,28 @@
     "showLess": "Show less",
     "showMore": "Show more",
     "documentationMenu": "Documentation menu",
+    "item": "item",
+    "items": "items",
+    "cron": "Cron",
+    "execution failed header": "Execution failed!",
+    "execution failed message": "With last error: <code>{message}</code>",
+    "task run id": "TaskRun ID",
+    "active": "Active",
+    "flows imported": "Flows imported",
+    "flow not imported": "Some flow could not be imported",
+    "dashboard_label": "Dashboard",
+    "default_dashboard": "Default Dashboard",
+    "custom_dashboard": "Custom Dashboards",
+    "create_custom_dashboard": "Create new dashboard",
+    "edit_custom_dashboard": "Edit Dashboard",
+    "custom_dashboard_empty": "There are no results to be shown.",
     "filters": {
       "label": "Choose filters",
       "empty": "No data.",
+      "format": "Type parameter as 'key:value'",
       "options": {
-        "user": "User",
         "namespace": "Namespace",
+        "flow": "Flow",
         "state": "State",
         "trigger_state": "State",
         "scope": "Scope",
@@ -974,14 +1010,18 @@
         "level": "Log level",
         "task": "Task",
         "metric": "Metric",
+        "user": "User",
+        "type": "Type",
+        "service_type": "Type",
         "permission": "Permission",
         "action": "Action",
+        "status": "Status",
         "details": "Details",
         "aggregation": "Aggregation",
         "relative_date": "Relative date",
         "absolute_date": "Absolute date",
-        "text": "text",
-        "labels": "Labels"
+        "labels": "Labels",
+        "text": "text"
       },
       "comparators": {
         "is": "is",
@@ -1006,24 +1046,10 @@
         }
       },
       "settings": {
+        "label": "Page settings",
         "show_chart": "Show main chart"
-      },
-      "key_value_type": "Type parameter as 'key:value'"
+      }
     },
-    "item": "item",
-    "items": "items",
-    "cron": "Cron",
-    "execution failed header": "Execution failed!",
-    "execution failed message": "With last error: <code>{message}</code>",
-    "task run id": "TaskRun ID",
-    "active": "Active",
-    "flows imported": "Flows imported",
-    "flow not imported": "Some flow could not be imported",
-    "dashboard_label": "Dashboard",
-    "default_dashboard": "Default Dashboard",
-    "custom_dashboard": "Custom Dashboards",
-    "create_custom_dashboard": "Create new dashboard",
-    "edit_custom_dashboard": "Edit Dashboard",
-    "custom_dashboard_empty": "There are no results to be shown."
+    "custom value": "Custom value"
   }
 }

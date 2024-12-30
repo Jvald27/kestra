@@ -1,5 +1,5 @@
 <template>
-    <Navbar :title="route.title">
+    <Navbar :title="routeInfo.title">
         <template #additional-right v-if="!isUserEmpty && user.hasAnyAction(permission.NAMESPACE, action.CREATE)">
             <ul>
                 <li>
@@ -12,11 +12,7 @@
     </Navbar>
 
     <el-row class="p-5">
-        <el-input v-model="filter" placeholder="Search" clearable class="w-25 pb-2 filter">
-            <template #prefix>
-                <Magnify />
-            </template>
-        </el-input>
+        <KestraFilter :placeholder="$t('search')" />
         <el-col v-if="!namespaces || !namespaces.length" :span="24" class="my-2 p-3 namespaces empty">
             <span>{{ t("no_namespaces") }}</span>
         </el-col>
@@ -46,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-    import {onMounted, computed, watch, ref} from "vue";
+    import {onMounted, watch, computed} from "vue";
     import {useStore} from "vuex";
     import {ElTree} from "element-plus";
 
@@ -55,14 +51,15 @@
 
     // @ts-expect-error will refactor in the future
     import Navbar from "../layout/TopNavBar.vue";
+    import KestraFilter from "../filter/KestraFilter.vue";
 
     import permission from "../../models/permission";
     import action from "../../models/action";
 
     import Plus from "vue-material-design-icons/Plus.vue";
-    import Magnify from "vue-material-design-icons/Magnify.vue";
     import DotsSquare from "vue-material-design-icons/DotsSquare.vue";
     import TextSearch from "vue-material-design-icons/TextSearch.vue";
+    import {useRoute} from "vue-router";
 
     const store = useStore();
 
@@ -79,21 +76,21 @@
         system?: boolean;
     }
 
-    const route = computed(() => ({title: t("namespaces")}));
+    const routeInfo = computed(() => ({title: t("namespaces")}));
     const user = computed(() => store.state.auth.user);
     const isUserEmpty = computed(() => Object.keys(user.value).length === 0);
 
-    const filter = ref("");
-    watch(filter, () => loadData());
+    const route = useRoute()
 
     const namespaces = computed(() => store.state.namespace.namespaces as Namespace[]);
     const loadData = () => {
         // TODO: Implement a new endpoint which does not require size limit but returns everything
-        const query = {size: 10000, page: 1, ...(filter.value ? {q: filter.value} : {})};
+        const query = {size: 10000, page: 1, ...(route.query?.q ? {q: route.query.q} : {})}
         store.dispatch("namespace/search", query);
     };
 
     onMounted(() => loadData());
+    watch(() => route.query, () => loadData());
 
     const hierarchy = (data: Namespace[]): Node[] => {
         if (!data) return [];

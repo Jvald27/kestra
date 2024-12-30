@@ -44,7 +44,7 @@
 
     const parse = useMarkdownParser();
     const store = useStore();
-    const {t} = useI18n();
+    const {t} = useI18n({useScope: "global"});
 
     const docWrapper = ref<HTMLDivElement | null>(null);
 

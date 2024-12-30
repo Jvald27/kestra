@@ -4,7 +4,18 @@
             <span class="fs-6 fw-bold">
                 {{ t("dashboard.executions_in_progress") }}
             </span>
-            <RouterLink :to="{name: 'executions/list'}">
+            <RouterLink
+                :to="{name: 'executions/list',
+                      query:{state:[
+                          State.RUNNING,
+                          State.RESTARTED,
+                          State.CREATED,
+                          State.PAUSED,
+                          State.RETRYING,
+                          State.QUEUED,
+                          State.KILLING
+                      ]}}"
+            >
                 <el-button type="primary" size="small" text>
                     {{ t("dashboard.see_all") }}
                 </el-button>
@@ -118,6 +129,8 @@
     import {useI18n} from "vue-i18n";
 
     import moment from "moment";
+
+    import State from "../../../../../utils/state.js"
 
     import Status from "../../../../Status.vue";
     import NoData from "../../../../layout/NoData.vue";

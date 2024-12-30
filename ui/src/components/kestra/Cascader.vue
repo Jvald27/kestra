@@ -5,12 +5,18 @@
                 <VarValue :value="data.value" :execution="execution" />
             </div>
             <div v-else class="w-100 d-flex justify-content-between">
-                <div class="pe-5 d-flex task label-container" :title="data.label">
+                <div
+                    class="pe-5 d-flex task label-container"
+                    :title="data.label"
+                >
                     {{ data.label }}
                 </div>
                 <div v-if="data.value && data.children">
                     <code>
-                        {{ data.children.length }} {{ data.children.length === 1 ? t("item") : t("items") }}
+                        {{ data.children.length }}
+                        {{
+                            data.children.length === 1 ? t("item") : t("items")
+                        }}
                     </code>
                 </div>
             </div>
@@ -24,7 +30,8 @@
     import {useI18n} from "vue-i18n";
     const {t} = useI18n({useScope: "global"});
 
-    const isFile = (data: any) => typeof data === "string" && data.startsWith("kestra:///");
+    const isFile = (data: any) =>
+        typeof data === "string" && data.startsWith("kestra:///");
 
     interface Options {
         label: string;
@@ -32,13 +39,14 @@
         children?: Options[];
     }
 
-    defineProps<{options: Options, execution: any}>();
+    defineProps<{ options: Options; execution: any }>();
 </script>
 
 <style lang="scss" scoped>
-.label-container{
+.label-container {
     white-space: nowrap;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     text-overflow: ellipsis;
 }
 </style>
