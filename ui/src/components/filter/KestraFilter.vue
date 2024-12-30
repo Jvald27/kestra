@@ -140,8 +140,6 @@
     import {ref, computed} from "vue";
     import {ElSelect} from "element-plus";
 
-    import {Shown, Buttons, CurrentItem} from "./utils/types";
-
     import Refresh from "../layout/RefreshButton.vue";
     import Items from "./segments/Items.vue";
     import Label from "./components/Label.vue";
@@ -170,7 +168,7 @@
         values: {type: Object, default: undefined},
         decode: {type: Boolean, default: true},
         buttons: {
-            type: Object as () => Buttons,
+            type: Object,
             default: () => ({
                 refresh: {shown: false, callback: () => {}},
                 settings: {
@@ -180,7 +178,7 @@
             }),
         },
         dashboards: {
-            type: Object as () => Shown,
+            type: Object,
             default: () => ({shown: false}),
         },
         placeholder: {type: String, default: undefined},
@@ -444,7 +442,7 @@
         }
     });
 
-    const current = ref<CurrentItem[]>([]);
+    const current = ref([]);
     const includedOptions = computed(() => {
         const dates = ["relative_date", "absolute_date"];
 
