@@ -1,0 +1,8 @@
+id: embedded-flow
+namespace: io.kestra.tests
+
+tasks:
+  - id: embeddedFlow
+    type: io.kestra.plugin.core.flow.EmbeddedSubflow
+    namespace: io.kestra.tests
+    flowId: minimal

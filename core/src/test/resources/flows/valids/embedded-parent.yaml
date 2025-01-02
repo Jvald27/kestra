@@ -1,0 +1,8 @@
+id: embedded-parent
+namespace: io.kestra.tests
+
+tasks:
+  - id: embeddedParent
+    type: io.kestra.plugin.core.flow.EmbeddedSubflow
+    namespace: io.kestra.tests
+    flowId: embedded-flow

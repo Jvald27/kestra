@@ -16,6 +16,7 @@ import io.kestra.core.repositories.FlowTopologyRepositoryInterface;
 import io.kestra.core.services.ConditionService;
 import io.kestra.core.utils.ListUtils;
 import io.kestra.plugin.core.condition.*;
+import io.kestra.plugin.core.flow.ChildFlowInterface;
 import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -157,11 +158,9 @@ public class FlowTopologyService {
             return parent
                 .allTasksWithChilds()
                 .stream()
-                .filter(t -> t instanceof ExecutableTask)
-                .map(t -> (ExecutableTask<?>) t)
-                .anyMatch(t ->
-                    t.subflowId() != null && t.subflowId().namespace().equals(child.getNamespace()) && t.subflowId().flowId().equals(child.getId())
-                );
+                .filter(t -> t instanceof ChildFlowInterface)
+                .map(t -> (ChildFlowInterface) t)
+                .anyMatch(t -> Objects.equals(t.getFlowId(), child.getId()) && Objects.equals(t.getNamespace(), child.getNamespace()));
         } catch (Exception e) {
             log.warn("Failed to detect flow task on namespace:'{}', flowId:'{}'", parent.getNamespace(), parent.getId(), e);
             return false;

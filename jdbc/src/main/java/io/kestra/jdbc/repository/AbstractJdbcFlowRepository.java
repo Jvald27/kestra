@@ -60,7 +60,7 @@ public abstract class AbstractJdbcFlowRepository extends AbstractJdbcRepository 
                 Flow deserialize = this.jdbcRepository.deserialize(source);
 
                 // raise exception for invalid flow, ex: Templates disabled
-                deserialize.allTasksWithChilds();
+                deserialize.allTasks().forEach((task) -> {});
 
                 return deserialize;
             } catch (DeserializationException e) {

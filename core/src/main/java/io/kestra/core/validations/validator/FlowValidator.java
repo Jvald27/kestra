@@ -7,6 +7,7 @@ import io.kestra.core.models.tasks.ExecutableTask;
 import io.kestra.core.models.tasks.Task;
 import io.kestra.core.utils.ListUtils;
 import io.kestra.core.validations.FlowValidation;
+import io.kestra.plugin.core.flow.ChildFlowInterface;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.NonNull;
@@ -60,9 +61,9 @@ public class FlowValidator implements ConstraintValidator<FlowValidation, Flow> 
         }
 
         value.allTasksWithChilds()
-            .stream().filter(task -> task instanceof ExecutableTask<?> executableTask
-                && value.getId().equals(executableTask.subflowId().flowId())
-                && value.getNamespace().equals(executableTask.subflowId().namespace()))
+            .stream().filter(task -> task instanceof ChildFlowInterface childFlow
+                && value.getId().equals(childFlow.getFlowId())
+                && value.getNamespace().equals(childFlow.getNamespace()))
             .forEach(task -> violations.add("Recursive call to flow [" + value.getNamespace() + "." + value.getId() + "]"));
 
         // input unique name
