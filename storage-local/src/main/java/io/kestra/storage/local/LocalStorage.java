@@ -240,10 +240,4 @@ public class LocalStorage implements StorageInterface {
             Path.of(basePath.toAbsolutePath().toString(), tenantId);
         return URI.create("kestra:///" + prefix.relativize(path).toString().replace("\\", "/"));
     }
-
-    private void parentTraversalGuard(URI uri) {
-        if (uri.toString().contains("..")) {
-            throw new IllegalArgumentException("File should be accessed with their full path and not using relative '..' path.");
-        }
-    }
 }
