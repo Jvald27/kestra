@@ -1,5 +1,7 @@
 package io.kestra.plugin.core.http;
 
+import io.kestra.core.http.client.configurations.HttpConfiguration;
+import io.kestra.core.http.client.configurations.SslOptions;
 import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.annotations.PluginProperty;
@@ -8,7 +10,7 @@ import io.kestra.core.models.executions.Execution;
 import io.kestra.core.models.triggers.*;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.utils.TruthUtils;
-import io.micronaut.http.HttpMethod;
+import io.micronaut.http.MediaType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -108,19 +110,18 @@ public class Trigger extends AbstractTrigger implements PollingTriggerInterface,
     private String uri;
 
     @Builder.Default
-    private HttpMethod method = HttpMethod.GET;
+    private String method = "GET";
 
     private String body;
 
     private Map<String, Object> formData;
 
-    private String contentType;
+    @Builder.Default
+    private String contentType = MediaType.APPLICATION_JSON;;
 
     private Map<CharSequence, CharSequence> headers;
 
-    private RequestOptions options;
-
-    private SslOptions sslOptions;
+    private HttpConfiguration options;
 
     @Builder.Default
     @Schema(
@@ -128,7 +129,6 @@ public class Trigger extends AbstractTrigger implements PollingTriggerInterface,
         description = "When true, the `encryptedBody` output will be filled, otherwise the `body` output will be filled"
     )
     private boolean encryptBody = false;
-
 
     @Override
     public Optional<Execution> evaluate(ConditionContext conditionContext, TriggerContext context) throws Exception {
@@ -142,10 +142,12 @@ public class Trigger extends AbstractTrigger implements PollingTriggerInterface,
             .formData(this.formData)
             .contentType(this.contentType)
             .headers(this.headers)
-            .options(this.options)
-            .sslOptions(this.sslOptions)
-            // we allow failed status code as it is the condition that must determine whether we trigger the flow
-            .allowFailed(true)
+            .options((this.options == null ? HttpConfiguration.builder() : this.options.toBuilder())
+                // we allow failed status code as it is the condition that must determine whether we trigger the flow
+                .allowFailed(true)
+                .ssl(this.options != null && this.options.getSsl() != null ? this.options.getSsl() : this.sslOptions)
+                .build()
+            )
             .encryptBody(this.encryptBody)
             .build();
         var output = request.run(runContext);
@@ -169,5 +171,22 @@ public class Trigger extends AbstractTrigger implements PollingTriggerInterface,
         }
 
         return Optional.empty();
+    }
+
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Deprecated
+    private SslOptions sslOptions;
+
+    @Deprecated
+    public void sslOptions(SslOptions sslOptions) {
+        if (this.options == null) {
+            this.options = HttpConfiguration.builder()
+                .build();
+        }
+
+        this.sslOptions = sslOptions;
+        this.options = this.options.toBuilder()
+            .ssl(sslOptions)
+            .build();
     }
 }

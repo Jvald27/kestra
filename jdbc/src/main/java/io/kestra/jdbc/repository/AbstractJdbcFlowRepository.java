@@ -669,7 +669,7 @@ public abstract class AbstractJdbcFlowRepository extends AbstractJdbcRepository 
 
         FlowWithSource deleted = flow.toDeleted();
 
-        Map<Field<Object>, Object> fields = this.jdbcRepository.persistFields(deleted);
+        Map<Field<Object>, Object> fields = this.jdbcRepository.persistFields(deleted.toFlow());
         fields.put(field("source_code"), deleted.getSource());
 
         this.jdbcRepository.persist(deleted, fields);

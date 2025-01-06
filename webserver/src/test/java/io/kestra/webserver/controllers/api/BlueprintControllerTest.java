@@ -48,7 +48,7 @@ class BlueprintControllerTest {
         );
 
         assertThat(blueprintsWithTotal.getTotal(), is(2L));
-        ArrayListTotal<BlueprintController.BlueprintItem> blueprints = blueprintsWithTotal.getResults();
+        List<BlueprintController.BlueprintItem> blueprints = blueprintsWithTotal.getResults();
         assertThat(blueprints.size(), is(2));
         assertThat(blueprints.getFirst().getId(), is("1"));
         assertThat(blueprints.getFirst().getTitle(), is("GCS Trigger"));

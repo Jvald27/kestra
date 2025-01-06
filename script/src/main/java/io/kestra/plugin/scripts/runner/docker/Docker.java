@@ -265,6 +265,12 @@ public class Docker extends TaskRunner {
     private String shmSize;
 
     @Schema(
+        title = "Give extended privileges to this container."
+    )
+    @PluginProperty(dynamic = true)
+    private Boolean privileged;
+
+    @Schema(
         title = "File handling strategy.",
         description = """
             How to handle local files (input files, output files, namespace files, ...).
@@ -312,6 +318,7 @@ public class Docker extends TaskRunner {
             .cpu(dockerOptions.getCpu())
             .memory(dockerOptions.getMemory())
             .shmSize(dockerOptions.getShmSize())
+            .privileged(dockerOptions.getPrivileged())
             .build();
     }
 
@@ -727,6 +734,10 @@ public class Docker extends TaskRunner {
 
         if (this.getShmSize() != null) {
             hostConfig.withShmSize(convertBytes(runContext.render(this.getShmSize())));
+        }
+
+        if (this.getPrivileged() != null) {
+            hostConfig.withPrivileged(this.getPrivileged());
         }
 
         if (this.getNetworkMode() != null) {

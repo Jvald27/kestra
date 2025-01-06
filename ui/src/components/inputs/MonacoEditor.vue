@@ -541,6 +541,9 @@
                 case "task":
                     autocompletions = ["id", "type"];
                     break;
+                case "taskrun":
+                    autocompletions = ["id", "startDate", "attemptsCount", "parentId", "value", "iteration"];
+                    break;
                 case "error":
                     autocompletions = ["taskId", "message", "stackTrace"];
                     break;

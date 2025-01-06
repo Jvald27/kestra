@@ -694,7 +694,8 @@
               "label": "图表配色方案",
               "classic": "经典",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "日志字体大小"
           }
         },
         "localization": {

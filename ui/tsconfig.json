@@ -28,7 +28,9 @@
     },
   },
   "include": [
-    "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", ".storybook/preview.*",
+    ".storybook/preview.*",
+    "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue",
+    "theme/**/*.ts", "theme/**/*.tsx", "theme/**/*.vue",
     "tests/**/*.ts", "tests/**/*.tsx"
   ]
 }

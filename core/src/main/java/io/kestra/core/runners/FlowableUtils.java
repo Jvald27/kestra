@@ -431,6 +431,7 @@ public class FlowableUtils {
 
         ArrayList<ResolvedTask> result = new ArrayList<>();
 
+        int index = 0;
         for (Object current : distinctValue) {
             try {
                 String resolvedValue = current instanceof String stringValue ? stringValue : MAPPER.writeValueAsString(current);
@@ -438,6 +439,7 @@ public class FlowableUtils {
                     result.add(ResolvedTask.builder()
                         .task(task)
                         .value(resolvedValue)
+                        .iteration(index++)
                         .parentId(parentTaskRun.getId())
                         .build()
                     );

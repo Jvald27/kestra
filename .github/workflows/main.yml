@@ -334,7 +334,10 @@ jobs:
       always() &&
       startsWith(github.ref, 'refs/tags/v') &&
       needs.check.result == 'success' &&
-      (needs.check-e2e.result == 'skipped' || needs.check-e2e.result == 'success')
+      (
+        github.event.inputs.skip-test == 'true' ||
+        (needs.check-e2e.result == 'skipped' || needs.check-e2e.result == 'success')
+      )
     steps:
       # Download Exec
       - name: Download executable
@@ -379,7 +382,10 @@ jobs:
       always() &&
       github.ref == 'refs/heads/develop' &&
       needs.check.result == 'success' &&
-      (needs.check-e2e.result == 'skipped' || needs.check-e2e.result == 'success')
+      (
+        github.event.inputs.skip-test == 'true' ||
+        (needs.check-e2e.result == 'skipped' || needs.check-e2e.result == 'success')
+      )
     strategy:
       matrix:
         image:
@@ -448,9 +454,12 @@ jobs:
     needs: [check, check-e2e]
     if: |
       always() &&
-      github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v') &&
+      (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v')) &&
       needs.check.result == 'success' &&
-      (needs.check-e2e.result == 'skipped' || needs.check-e2e.result == 'success')
+      (
+        github.event.inputs.skip-test == 'true' ||
+        (needs.check-e2e.result == 'skipped' || needs.check-e2e.result == 'success')
+      )
     steps:
       - uses: actions/checkout@v4
 

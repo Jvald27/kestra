@@ -694,7 +694,8 @@
               "label": "Diagramm-Farbschema",
               "classic": "Klassisch",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "Logs Schriftgröße"
           }
         },
         "localization": {

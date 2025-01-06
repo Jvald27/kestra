@@ -321,7 +321,7 @@
 
     .attempt-header {
         display: flex;
-        gap: calc(var(--spacer) / 2);
+        gap: .5rem;
 
         > * {
             display: flex;
@@ -336,10 +336,6 @@
             background: var(--bs-gray-400);
             padding: .375rem .75rem;
             white-space: nowrap;
-
-            html.dark & {
-                color: var(--bs-gray-600);
-            }
         }
 
         .task-id, .task-duration {
@@ -352,7 +348,7 @@
             text-overflow: ellipsis;
 
             span span {
-                color: var(--el-text-color-regular);
+                color: var(--ks-content-primary);
                 font-size: 14px;
 
                 html:not(.dark) & {
@@ -375,14 +371,15 @@
         .task-duration small {
             white-space: nowrap;
 
-            color: var(--bs-gray-800);
+            color: var(--ks-content-secondary);
         }
 
         .task-run-buttons {
             padding: .5rem;
             height: 100%;
             border: 1px solid rgba($white, .05);
-            background-color: var(--el-button-bg-color) !important;
+            background-color: var(--ks-button-background-secondary) !important;
+            // FIXME: what does this mean?
             &:not(:hover) {
                 background: rgba($white, .10);
             }

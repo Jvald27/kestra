@@ -694,7 +694,8 @@
               "label": "차트 색상 구성표",
               "classic": "클래식",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "로그 글꼴 크기"
           }
         },
         "localization": {

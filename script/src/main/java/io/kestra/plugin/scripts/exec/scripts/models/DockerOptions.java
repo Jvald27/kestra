@@ -113,6 +113,12 @@ public class DockerOptions {
     @PluginProperty(dynamic = true)
     private String shmSize;
 
+    @Schema(
+        title = "Give extended privileges to this container."
+    )
+    @PluginProperty(dynamic = true)
+    private Boolean privileged;
+
     @Deprecated
     public void setDockerHost(String host) {
         this.host = host;

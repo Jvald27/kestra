@@ -144,10 +144,7 @@
         align-items: flex-start;
         gap: 10px;
         border-radius: 2px;
-        background: var(--bs-gray-300);
-        html.dark & {
-            background: #21242E;
-        }
+        background-color: var(--ks-background-tag);
         font-size: 0.65rem;
         line-height: 1.0625rem;
     }

@@ -387,4 +387,20 @@ class ExecutionServiceTest {
         assertThat(executionRepository.findById(execution.getTenantId(),execution.getId()), is(Optional.empty()));
         assertThat(logRepository.findByExecutionId(execution.getTenantId(),execution.getId(), Level.INFO), hasSize(4));
     }
+
+    @Test
+    @LoadFlows({"flows/valids/pause_no_tasks.yaml"})
+    void shouldKillPausedExecutions() throws Exception {
+        Execution execution = runnerUtils.runOneUntilPaused(null, "io.kestra.tests", "pause_no_tasks");
+        Flow flow = flowRepository.findByExecution(execution);
+
+        assertThat(execution.getTaskRunList(), hasSize(1));
+        assertThat(execution.getState().getCurrent(), is(State.Type.PAUSED));
+
+        Execution killed = executionService.kill(execution, flow);
+
+        assertThat(killed.getState().getCurrent(), is(State.Type.RESTARTED));
+        assertThat(killed.findTaskRunsByTaskId("pause").getFirst().getState().getCurrent(), is(State.Type.KILLED));
+        assertThat(killed.getState().getHistories(), hasSize(4));
+    }
 }

@@ -223,7 +223,7 @@
 
         &::-webkit-scrollbar-thumb {
             -webkit-border-radius: 10px;
-            background: var(--bs-primary);
+            background: var(--ks-button-background-primary);
         }
     }
 
@@ -235,20 +235,20 @@
         align-items: center;
         gap: 8px;
         border-radius: 4px;
-        border: 1px solid var(--bs-gray-300);
-        background-color: white;
-
-        html.dark & {
-            background-color: var(--bs-tertiary);
-            border-color: #404559;
-        }
-
-        color: var(--text-color-primary);
         text-overflow: ellipsis;
         font-size: 12px;
         font-weight: 700;
         line-height: 26px;
         cursor: pointer;
+
+        border: 1px solid var(--ks-border-primary);
+        background-color: var(--ks-button-background-secondary);
+        color: var(--ks-content-primary);
+
+        &:hover{
+            border-color: var(--ks-border-active);
+            background-color: var(--ks-button-background-secondary-hover);
+        }
     }
 
     .size {

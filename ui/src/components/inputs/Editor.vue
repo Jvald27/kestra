@@ -433,6 +433,7 @@
 
 <style lang="scss">
     @import "../../styles/layout/root-dark.scss";
+    @import "../../styles/color-palette.scss";
 
     :not(.namespace-form, .el-drawer__body) > .ks-editor{
         flex-direction: column;
@@ -448,8 +449,8 @@
         display: flex;
 
         .top-nav {
-            background-color: var(--bs-white);
-            padding: calc(var(--spacer) / 2);
+            background-color: var(--ks-background-card);
+            padding: .5rem;
             border-radius: var(--bs-border-radius-lg);
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -469,15 +470,15 @@
                 background-color: var(--el-input-bg-color, var(--el-fill-color-blank));
                 border-radius: var(--el-input-border-radius, var(--el-border-radius-base));
                 transition: var(--el-transition-box-shadow);
-                box-shadow: 0 0 0 1px var(--bs-border-color) inset;
+                box-shadow: 0 0 0 1px var(--ks-border-primary) inset;
                 padding-top: 7px;
 
                 &.custom-dark-vs-theme {
                     background-color: $input-bg;
                 }
 
-                html.dark & {
-                    background-color: var(--bs-gray-100);
+                &.theme-light{
+                    background-color: $base-white;
                 }
             }
 
@@ -489,7 +490,7 @@
                 padding-right: inherit;
                 cursor: text;
                 user-select: none;
-                color: var(--el-text-color-placeholder);
+                color: var(--ks-content-inactive);
             }
 
             .editor-wrapper {
@@ -504,7 +505,7 @@
                     }
 
                     p {
-                        margin-bottom: calc(var(--spacer) / 2);
+                        margin-bottom: .5rem;
 
                         &:last-child {
                             display: none;
@@ -526,7 +527,7 @@
                     list-style: none;
                     padding: 0;
                     margin: 0;
-                    //gap: calc(var(--spacer) / 2);
+                    //gap: .5rem;
                 }
             }
         }

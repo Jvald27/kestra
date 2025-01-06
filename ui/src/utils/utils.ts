@@ -70,7 +70,7 @@ export default {
         const flat = this.flatten(data);
 
         return Object.keys(flat).map((key) => {
-            let rawValue = flat[key];
+            const rawValue = flat[key];
             if (key === "variables.executionId") {
                 return {key, value: rawValue, subflow: true};
             }
@@ -79,7 +79,7 @@ export default {
                 typeof rawValue === "string" &&
                 rawValue.match(/\d{4}-\d{2}-\d{2}/)
             ) {
-                let date = moment(rawValue, moment.ISO_8601);
+                const date = moment(rawValue, moment.ISO_8601);
                 if (date.isValid()) {
                     return {key, value: rawValue, date: true};
                 }
@@ -212,7 +212,7 @@ export default {
         }
 
         // class name
-        let htmlClass = document.getElementsByTagName("html")[0].classList;
+        const htmlClass = document.getElementsByTagName("html")[0].classList;
 
         function removeClasses() {
             htmlClass.forEach((cls) => {
@@ -293,4 +293,15 @@ export default {
     distinctFilter(value:string, index:number, array: string[]) {
         return array.indexOf(value) === index;
     },
+
+    toFormData(obj: any) {
+        if (!(obj instanceof FormData)) {
+            const formData = new FormData();
+            for (const key in obj) {
+                formData.append(key, obj[key]);
+            }
+            return formData;
+        }
+        return obj;
+    }
 };

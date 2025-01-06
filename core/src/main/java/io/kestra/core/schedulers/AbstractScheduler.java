@@ -3,6 +3,8 @@ package io.kestra.core.schedulers;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import io.kestra.core.events.CrudEvent;
+import io.kestra.core.events.CrudEventType;
 import io.kestra.core.exceptions.InternalException;
 import io.kestra.core.metrics.MetricRegistry;
 import io.kestra.core.models.conditions.Condition;
@@ -93,7 +95,8 @@ public abstract class AbstractScheduler implements Scheduler, Service {
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
 
     private final AtomicReference<ServiceState> state = new AtomicReference<>();
-    private final ApplicationEventPublisher<ServiceStateChangeEvent> eventPublisher;
+    private final ApplicationEventPublisher<ServiceStateChangeEvent> serviceStateEventPublisher;
+    protected final ApplicationEventPublisher<CrudEvent<Execution>> executionEventPublisher;
     protected final List<Runnable> receiveCancellations = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
@@ -116,7 +119,8 @@ public abstract class AbstractScheduler implements Scheduler, Service {
         this.pluginDefaultService = applicationContext.getBean(PluginDefaultService.class);
         this.workerGroupService = applicationContext.getBean(WorkerGroupService.class);
         this.logService = applicationContext.getBean(LogService.class);
-        this.eventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
+        this.serviceStateEventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
+        this.executionEventPublisher = applicationContext.getBean(ApplicationEventPublisher.class);
         setState(ServiceState.CREATED);
     }
 
@@ -617,9 +621,12 @@ public abstract class AbstractScheduler implements Scheduler, Service {
         var newExecution = execution.withTenantId(trigger.getTenantId());
         try {
             this.executionQueue.emit(newExecution);
+            this.executionEventPublisher.publishEvent(new CrudEvent<>(newExecution, CrudEventType.CREATE));
         } catch (QueueException e) {
             try {
-                this.executionQueue.emit(newExecution.failedExecutionFromExecutor(e).getExecution().withState(State.Type.FAILED));
+                Execution failedExecution = newExecution.failedExecutionFromExecutor(e).getExecution().withState(State.Type.FAILED);
+                this.executionQueue.emit(failedExecution);
+                this.executionEventPublisher.publishEvent(new CrudEvent<>(failedExecution, CrudEventType.CREATE));
             } catch (QueueException ex) {
                 log.error("Unable to emit the execution", ex);
             }
@@ -927,7 +934,7 @@ public abstract class AbstractScheduler implements Scheduler, Service {
 
     protected void setState(final ServiceState state) {
         this.state.set(state);
-        eventPublisher.publishEvent(new ServiceStateChangeEvent(this));
+        serviceStateEventPublisher.publishEvent(new ServiceStateChangeEvent(this));
     }
 
     /**

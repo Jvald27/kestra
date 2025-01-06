@@ -322,13 +322,18 @@ public class ExecutionService {
                     newTaskRun = newTaskRun.withOutputs(pauseTask.generateOutputs(onResumeInputs));
                 }
 
-                if (task instanceof Pause pauseTask && pauseTask.getTasks() == null && newState == State.Type.RUNNING) {
-                    newTaskRun = newTaskRun.withState(State.Type.SUCCESS);
+                // if it's a Pause task with no subtask, we terminate the task
+                if (task instanceof Pause pauseTask && pauseTask.getTasks() == null) {
+                    if (newState == State.Type.RUNNING) {
+                        newTaskRun = newTaskRun.withState(State.Type.SUCCESS);
+                    } else if (newState == State.Type.KILLING) {
+                        newTaskRun = newTaskRun.withState(State.Type.KILLED);
+                    }
                 }
 
                 if (originalTaskRun.getAttempts() != null && !originalTaskRun.getAttempts().isEmpty()) {
                     ArrayList<TaskRunAttempt> attempts = new ArrayList<>(originalTaskRun.getAttempts());
-                    attempts.set(attempts.size() - 1, attempts.get(attempts.size() - 1).withState(newState));
+                    attempts.set(attempts.size() - 1, attempts.getLast().withState(newState));
                     newTaskRun = newTaskRun.withAttempts(attempts);
                 }
 
@@ -450,7 +455,7 @@ public class ExecutionService {
      * The execution must be paused or this call will be a no-op.
      *
      * @param execution the execution to resume
-     * @param newState  should be RUNNING or KILLING, other states may lead to undefined behaviour
+     * @param newState  should be RUNNING or KILLING, other states may lead to undefined behavior
      * @param flow      the flow of the execution
      * @return the execution in the new state.
      * @throws Exception if the state of the execution cannot be updated

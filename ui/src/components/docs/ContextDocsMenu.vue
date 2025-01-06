@@ -144,7 +144,7 @@
         left: var(--spacer);
         top: 100%;
         right: var(--spacer);
-        background-color: var(--card-bg);
+        background-color: var(--ks-background-card);
         border-radius: 6px;
     }
 

@@ -77,7 +77,7 @@
 <style scoped lang="scss">
 .main {
 	padding: 3rem 1rem 1rem;
-	background: var(--el-text-color-primary);
+	background: var(--ks-background-body);
 	background: radial-gradient(ellipse at top, rgba(102, 51, 255, 0.6) 0%, rgba(253, 253, 253, 0) 20%);
 	background-size: 4000px;
 	background-position: center;
@@ -128,7 +128,7 @@
                 line-height: var(--el-font-line-height-primary);
                 text-align: center;
                 font-weight: 600;
-                color: var(--el-text-color-regular);
+                color: var(--ks-content-primary);
             }
 
             .section-1-desc {
@@ -137,11 +137,11 @@
                 font-weight: 300;
                 font-size: var(--el-font-size-extra-small);
                 text-align: center;
-                color: var(--el-text-color-regular);
+                color: var(--ks-content-primary);
             }
 
             .guidance {
-                color: var(--el-text-color-secondary);
+                color: var(--ks-content-link);
             }
         }
 

@@ -440,11 +440,11 @@
     }
 
     .debug {
-        background: var(--bs-gray-100);
+        background: var(--ks-background-body);
     }
 
     .bordered {
-        border: 1px solid var(--bs-border-color);
+        border: 1px solid var(--ks-border-primary);
     }
 
     .bordered > .el-collapse-item {
@@ -457,17 +457,17 @@
         }
 
         &::-webkit-scrollbar-track {
-            background: var(--card-bg);
+            background: var(--ks-background-card);
         }
 
         &::-webkit-scrollbar-thumb {
-            background: var(--bs-primary);
+            background: var(--ks-button-background-primary);
             border-radius: 0px;
         }
     }
 
     .wrapper {
-        background: var(--card-bg);
+        background: var(--ks-background-card);
     }
 
     .el-cascader-menu {
@@ -475,7 +475,7 @@
         max-width: 300px;
 
         &:last-child {
-            border-right: 1px solid var(--bs-border-color);
+            border-right: 1px solid var(--ks-border-primary);
         }
 
         .el-cascader-menu__wrap {
@@ -486,19 +486,19 @@
             height: 36px;
             line-height: 36px;
             font-size: var(--el-font-size-small);
-            color: var(--el-text-color-regular);
+            color: var(--ks-content-primary);
 
             &[aria-haspopup="false"] {
                 padding-right: 0.5rem !important;
             }
 
             &:hover {
-                background-color: var(--bs-border-color);
+                background-color: var(--ks-border-primary);
             }
 
             &.in-active-path,
             &.is-active {
-                background-color: var(--bs-border-color);
+                background-color: var(--ks-border-primary);
                 font-weight: normal;
             }
 
@@ -513,7 +513,7 @@
             }
 
             code span.regular {
-                color: var(--el-text-color-regular);
+                color: var(--ks-content-primary);
             }
         }
     }
@@ -523,13 +523,13 @@
     flex: 0 0 3px;
     border-radius: 0.15rem;
     margin: 0 4px;
-    background-color: var(--bs-border-color);
+    background-color: var(--ks-border-primary);
     border: none;
     cursor: col-resize;
     user-select: none; /* disable selection */
 
     &:hover {
-        background-color: var(--bs-secondary);
+        background-color: var(--ks-border-active);
     }
 }
 </style>

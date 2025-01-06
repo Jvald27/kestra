@@ -694,7 +694,8 @@
               "label": "चार्ट रंग योजना",
               "classic": "क्लासिक",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "लॉग्स फ़ॉन्ट आकार"
           }
         },
         "localization": {

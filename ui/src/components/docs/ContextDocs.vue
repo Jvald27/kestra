@@ -87,7 +87,7 @@
             try {
                 response = await store.dispatch("doc/fetchAppId", docId)
             } catch {
-                // eat the error
+            // eat the error
             }
         }
 
@@ -112,6 +112,6 @@
     .blank {
         margin-top: 4px;
         margin-left: var(--spacer);
-        color: var(--bs-tertiary-color);
+        color: var(--ks-content-tertiary);
     }
 </style>

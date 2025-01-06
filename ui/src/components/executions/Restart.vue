@@ -230,6 +230,6 @@
 </script>
 <style scoped>
 .execution-description {
-    color: var(--bs-gray-700);
+    color: var(--ks-content-secondary);
 }
 </style>

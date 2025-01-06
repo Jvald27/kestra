@@ -694,7 +694,8 @@
               "label": "チャートのカラースキーム",
               "classic": "クラシック",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "ログフォントサイズ"
           }
         },
         "localization": {

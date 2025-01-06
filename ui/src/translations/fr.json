@@ -694,7 +694,8 @@
               "label": "Schéma de Couleurs du Graphique",
               "classic": "Classique",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "Taille de police des Logs"
           }
         },
         "localization": {

@@ -18,11 +18,11 @@ public class MapUtils {
         }
 
         if (a == null || a.isEmpty()) {
-            return copyMap(b);
+            return b;
         }
 
         if (b == null || b.isEmpty()) {
-            return copyMap(a);
+            return a;
         }
 
         Map copy = copyMap(a);

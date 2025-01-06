@@ -694,7 +694,8 @@
               "label": "Цветовая схема диаграммы",
               "classic": "Классический",
               "kestra": "Kestra"
-            }
+            },
+            "logs_font_size": "Размер шрифта Logs"
           }
         },
         "localization": {

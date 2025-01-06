@@ -753,6 +753,7 @@
             "mode": "Theme Mode",
             "editor_theme": "Editor Theme",
             "editor_font_size": "Editor Font Size",
+            "logs_font_size": "Logs Font Size",
             "editor_font_family": "Editor Font Family",
             "editor_folding_stratgy": "Automatic Code Folding in the Editor",
             "environment_name": "Environment Name",

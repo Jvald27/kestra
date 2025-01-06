@@ -232,7 +232,7 @@ export default {
                 });
         },
         importFlows(_, options) {
-            return this.$http.post(`${apiUrl(this)}/flows/import`, options, {headers: {"Content-Type": "multipart/form-data"}})
+            return this.$http.post(`${apiUrl(this)}/flows/import`, Utils.toFormData(options), {headers: {"Content-Type": "multipart/form-data"}})
         },
         disableFlowByIds(_, options) {
             return this.$http.post(`${apiUrl(this)}/flows/disable/by-ids`, options.ids)

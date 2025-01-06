@@ -3,23 +3,23 @@ package io.kestra.plugin.core.http;
 import com.devskiller.friendly_id.FriendlyId;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
+import io.kestra.core.http.client.HttpClientResponseException;
+import io.kestra.core.http.client.configurations.*;
+import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.runners.RunContextFactory;
+import io.kestra.core.serializers.JacksonMapper;
 import io.kestra.core.storages.StorageInterface;
+import io.kestra.core.utils.IdUtils;
 import io.kestra.core.utils.TestsUtils;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.*;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Head;
-import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.*;
 import io.micronaut.http.multipart.StreamingFileUpload;
 import io.micronaut.runtime.server.EmbeddedServer;
-import io.kestra.core.junit.annotations.KestraTest;
 import jakarta.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.RetryingTest;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -29,11 +29,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Base64;
+import java.util.Map;
 import java.util.Objects;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @KestraTest
 class RequestTest {
@@ -74,7 +77,7 @@ class RequestTest {
             .id(RequestTest.class.getSimpleName())
             .type(RequestTest.class.getName())
             .uri(url)
-            .method(HttpMethod.HEAD)
+            .method("HEAD")
             .build();
 
         RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
@@ -83,6 +86,79 @@ class RequestTest {
 
         assertThat(output.getUri(), is(URI.create(url)));
         assertThat(output.getHeaders().get("content-length").getFirst(), is("512789"));
+    }
+
+    @Test
+    void redirect() throws Exception {
+        try (
+            ApplicationContext applicationContext = ApplicationContext.run();
+            EmbeddedServer server = applicationContext.getBean(EmbeddedServer.class).start();
+
+        ) {
+            Request task = Request.builder()
+                .id(RequestTest.class.getSimpleName())
+                .type(RequestTest.class.getName())
+                .uri(server.getURL().toString() + "/redirect")
+                .build();
+
+            RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
+
+            Request.Output output = task.run(runContext);
+
+            assertThat(output.getBody(), is("{ \"hello\": \"world\" }"));
+            assertThat(output.getCode(), is(200));
+        }
+    }
+
+    @Test
+    void noRedirect() throws Exception {
+        try (
+            ApplicationContext applicationContext = ApplicationContext.run();
+            EmbeddedServer server = applicationContext.getBean(EmbeddedServer.class).start();
+
+        ) {
+            Request task = Request.builder()
+                .id(RequestTest.class.getSimpleName())
+                .type(RequestTest.class.getName())
+                .uri(server.getURL().toString() + "/redirect")
+                .options(HttpConfiguration.builder()
+                    .followRedirects(false)
+                    .build()
+                )
+                .build();
+
+            RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
+
+            Request.Output output = task.run(runContext);
+
+            assertThat(output.getCode(), is(301));
+        }
+    }
+
+    @Test
+    void allowFailed() throws Exception {
+        try (
+            ApplicationContext applicationContext = ApplicationContext.run();
+            EmbeddedServer server = applicationContext.getBean(EmbeddedServer.class).start();
+
+        ) {
+            Request task = Request.builder()
+                .id(RequestTest.class.getSimpleName())
+                .type(RequestTest.class.getName())
+                .uri(server.getURL().toString() + "/hello417")
+                .options(HttpConfiguration.builder()
+                    .allowFailed(true)
+                    .build()
+                )
+                .build();
+
+            RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
+
+            Request.Output output = task.run(runContext);
+
+            assertThat(output.getBody(), is("{ \"hello\": \"world\" }"));
+            assertThat(output.getCode(), is(417));
+        }
     }
 
     @Test
@@ -96,19 +172,20 @@ class RequestTest {
                 .id(RequestTest.class.getSimpleName())
                 .type(RequestTest.class.getName())
                 .uri(server.getURL().toString() + "/hello417")
-                .allowFailed(true)
                 .build();
 
             RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
 
-            Request.Output output = task.run(runContext);
+            HttpClientResponseException exception = assertThrows(
+                HttpClientResponseException.class,
+                () -> task.run(runContext)
+            );
 
-            assertThat(output.getBody(), is("{ \"hello\": \"world\" }"));
-            assertThat(output.getCode(), is(417));
+            assertThat(exception.getResponse().getStatus().getCode(), is(417));
         }
     }
 
-    @RetryingTest(5)
+    @Test
     void selfSigned() throws Exception {
         final String url = "https://self-signed.badssl.com/";
 
@@ -116,11 +193,13 @@ class RequestTest {
             .id(RequestTest.class.getSimpleName())
             .type(RequestTest.class.getName())
             .uri(url)
-            .allowFailed(true)
-            .options(HttpInterface.RequestOptions.builder()
-                .readTimeout(Duration.ofSeconds(30))
-                .build())
-            .sslOptions(AbstractHttp.SslOptions.builder().insecureTrustAllCertificates(true).build())
+            .headers(Map.of("bla", "sdfsdf"))
+            .options(HttpConfiguration.builder()
+                .allowFailed(true)
+                .timeout(TimeoutConfiguration.builder().readIdleTimeout(Duration.ofSeconds(30)).build())
+                .ssl(SslOptions.builder().insecureTrustAllCertificates(true).build())
+                .build()
+            )
             .build();
 
         RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
@@ -133,6 +212,30 @@ class RequestTest {
     }
 
     @Test
+    void json() throws Exception {
+        try (
+            ApplicationContext applicationContext = ApplicationContext.run();
+            EmbeddedServer server = applicationContext.getBean(EmbeddedServer.class).start();
+
+        ) {
+            Request task = Request.builder()
+                .id(RequestTest.class.getSimpleName())
+                .type(RequestTest.class.getName())
+                .method("POST")
+                .uri(server.getURL().toString() + "/post/json")
+                .body(JacksonMapper.ofJson().writeValueAsString(ImmutableMap.of("hello", "world")))
+                .build();
+
+            RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, Map.of());
+
+            Request.Output output = task.run(runContext);
+
+            assertThat(output.getBody(), is("{\"hello\":\"world\"}"));
+            assertThat(output.getCode(), is(200));
+        }
+    }
+
+    @Test
     void form() throws Exception {
         try (
             ApplicationContext applicationContext = ApplicationContext.run();
@@ -142,9 +245,9 @@ class RequestTest {
             Request task = Request.builder()
                 .id(RequestTest.class.getSimpleName())
                 .type(RequestTest.class.getName())
-                .method(HttpMethod.POST)
+                .method("POST")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .uri(server.getURL().toString() + "/post/simple")
+                .uri(server.getURL().toString() + "/post/url-encoded")
                 .headers(ImmutableMap.of(
                     "test", "{{ inputs.test }}"
                 ))
@@ -182,7 +285,7 @@ class RequestTest {
             Request task = Request.builder()
                 .id(RequestTest.class.getSimpleName())
                 .type(RequestTest.class.getName())
-                .method(HttpMethod.POST)
+                .method("POST")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .uri(server.getURL().toString() + "/post/multipart")
                 .formData(ImmutableMap.of("hello", "world", "file", fileStorage.toString()))
@@ -216,7 +319,7 @@ class RequestTest {
             Request task = Request.builder()
                 .id(RequestTest.class.getSimpleName())
                 .type(RequestTest.class.getName())
-                .method(HttpMethod.POST)
+                .method("POST")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .uri(server.getURL().toString() + "/post/multipart")
                 .formData(ImmutableMap.of("hello", "world", "file", ImmutableMap.of("content", fileStorage.toString(), "name", "test.yml")))
@@ -256,6 +359,77 @@ class RequestTest {
         }
     }
 
+    @Test
+    void bytes() {
+        Request task = Request.builder()
+            .id(RequestTest.class.getSimpleName())
+            .type(RequestTest.class.getName())
+            .uri("https://github.com/kestra-io.png")
+            .contentType("application/octet-stream")
+            .build();
+
+        RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, ImmutableMap.of());
+
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> task.run(runContext)
+        );
+
+        assertThat(exception.getMessage(), containsString("Illegal unicode code"));
+    }
+
+    @Test
+    void basicAuth() throws Exception {
+        try (
+            ApplicationContext applicationContext = ApplicationContext.run();
+            EmbeddedServer server = applicationContext.getBean(EmbeddedServer.class).start();
+        ) {
+            Request task = Request.builder()
+                .id(RequestTest.class.getSimpleName())
+                .type(RequestTest.class.getName())
+                .uri(server.getURL().toString() + "/auth/basic")
+                .options(HttpConfiguration.builder()
+                    .auth(BasicAuthConfiguration.builder().username("John").password("p4ss").build())
+                    .build()
+                )
+                .build();
+
+            RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, Map.of());
+
+            Request.Output output = task.run(runContext);
+
+            assertThat(output.getBody(), is("{\"hello\":\"John\"}"));
+            assertThat(output.getCode(), is(200));
+        }
+    }
+
+    @Test
+    void bearerAuth() throws Exception {
+        try (
+            ApplicationContext applicationContext = ApplicationContext.run();
+            EmbeddedServer server = applicationContext.getBean(EmbeddedServer.class).start();
+        ) {
+            String id = IdUtils.create();
+
+            Request task = Request.builder()
+                .id(RequestTest.class.getSimpleName())
+                .type(RequestTest.class.getName())
+                .uri(server.getURL().toString() + "/auth/bearer")
+                .options(HttpConfiguration.builder()
+                    .auth(BearerAuthConfiguration.builder().token(id).build())
+                    .build()
+                )
+                .build();
+
+            RunContext runContext = TestsUtils.mockRunContext(this.runContextFactory, task, Map.of());
+
+            Request.Output output = task.run(runContext);
+
+            assertThat(output.getBody(), is("{\"hello\":\"" + id + "\"}"));
+            assertThat(output.getCode(), is(200));
+        }
+    }
+
     @Controller
     static class MockController {
         @Get("/hello")
@@ -273,8 +447,46 @@ class RequestTest {
             return HttpResponse.status(HttpStatus.EXPECTATION_FAILED).body("{ \"hello\": \"world\" }");
         }
 
-        @Post(uri = "/post/simple", consumes = MediaType.APPLICATION_FORM_URLENCODED)
-        HttpResponse<String> simple(HttpRequest<?> request, String hello) {
+        @Get("/redirect")
+        HttpResponse<String> redirect() {
+            return HttpResponse.redirect(URI.create("/hello"));
+        }
+
+        @Get("/auth/basic")
+        HttpResponse<String> basicAuth(HttpRequest<?> request) {
+            return request.getHeaders()
+                .getAuthorization()
+                .filter(v -> v.startsWith("Basic "))
+                .map(v -> {
+                    String decode = new String(
+                        Base64.getDecoder().decode(v.substring(6).getBytes(StandardCharsets.UTF_8)),
+                        StandardCharsets.UTF_8
+                    );
+
+                    return decode.split(":", 2);
+                })
+                .filter(a -> a[1].equals("p4ss"))
+                .map(a -> HttpResponse.ok("{\"hello\":\"" + a[0] + "\"}"))
+                .orElseThrow();
+        }
+
+        @Get("/auth/bearer")
+        HttpResponse<String> bearerAuth(HttpRequest<?> request) {
+            return request.getHeaders()
+                .getAuthorization()
+                .filter(v -> v.startsWith("Bearer "))
+                .map(v -> v.substring(7))
+                .map(a -> HttpResponse.ok("{\"hello\":\"" + a + "\"}"))
+                .orElseThrow();
+        }
+
+        @Post(uri = "/post/json")
+        HttpResponse<Map<String, String>> postBody(@Body Map<String, String> body) {
+            return HttpResponse.ok(body);
+        }
+
+        @Post(uri = "/post/url-encoded", consumes = MediaType.APPLICATION_FORM_URLENCODED)
+        HttpResponse<String> postUrlEncoded(HttpRequest<?> request, String hello) {
             return HttpResponse.ok(hello + " > " + request.getHeaders().get("test"));
         }
 
