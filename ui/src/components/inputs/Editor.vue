@@ -113,6 +113,9 @@
                 taskType: undefined,
             };
         },
+        mounted() {
+            this.$store.commit("doc/setDocId", "flowEditor");
+        },
         computed: {
             ...mapGetters("core", ["guidedProperties"]),
             ...mapGetters("flow", ["flowValidation"]),
