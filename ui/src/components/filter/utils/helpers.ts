@@ -1,5 +1,19 @@
-export const encodeParams = (filters, OPTIONS) => {
-    const encode = (values, key) => {
+interface Filter {
+    label: string;
+    value: any;
+}
+
+interface Option {
+    key: string;
+    value: {
+        label: string;
+        value: string[];
+    };
+    comparators?: string[];
+}
+
+export const encodeParams = (filters: Filter[], OPTIONS: Option[]): Record<string, any> => {
+    const encode = (values: any[], key: string): (string | null)[] => {
         return values
             .map((v) => {
                 if (key === "childFilter" && v === "ALL") {
@@ -13,11 +27,11 @@ export const encodeParams = (filters, OPTIONS) => {
             .filter((v) => v !== null);
     };
 
-    return filters.reduce((query, filter) => {
+    return filters.reduce((query: Record<string, any>, filter: Filter) => {
         const match = OPTIONS.find((o) => o.value.label === filter.label);
         const key = match ? match.key : filter.label === "text" ? "q" : null;
 
-        if (key) {
+        if (match && key) {
             if (key === "details") {
                 match.value.value.forEach((item) => {
                     const value = item.split(":");
@@ -26,7 +40,8 @@ export const encodeParams = (filters, OPTIONS) => {
                     }
                 });
             }
-            if (key !== "date") query[key] = encode(filter.value, key);
+            if (key !== "date")
+                query[key] = encode(filter.value, key);
             else {
                 const {startDate, endDate} = filter.value[0];
 
@@ -41,8 +56,22 @@ export const encodeParams = (filters, OPTIONS) => {
     }, {});
 };
 
-export const decodeParams = (query, include, OPTIONS) => {
-    let params = Object.entries(query)
+interface Query {
+    [key: string]: any;
+}
+
+interface DecodedParam {
+    label: string;
+    value: any;
+    comparator?: string;
+}
+
+export const decodeParams = (
+    query: Query,
+    include: string[],
+    OPTIONS: Option[]
+): DecodedParam[] => {
+    let params: DecodedParam[] = Object.entries(query)
         .filter(
             ([key]) =>
                 key === "q" ||
