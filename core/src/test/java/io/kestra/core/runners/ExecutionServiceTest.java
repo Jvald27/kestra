@@ -370,7 +370,6 @@ class ExecutionServiceTest extends AbstractMemoryRunnerTest {
     }
 
     @Test
-    @LoadFlows({"flows/valids/pause_no_tasks.yaml"})
     void shouldKillPausedExecutions() throws Exception {
         Execution execution = runnerUtils.runOneUntilPaused(null, "io.kestra.tests", "pause_no_tasks");
         Flow flow = flowRepository.findByExecution(execution);
