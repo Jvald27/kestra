@@ -18,6 +18,7 @@ import io.micronaut.runtime.server.EmbeddedServer;
 import io.kestra.core.junit.annotations.KestraTest;
 import jakarta.inject.Inject;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.RetryingTest;
 import org.reactivestreams.Publisher;
@@ -108,6 +109,7 @@ class RequestTest {
         }
     }
 
+    @Disabled("self-signed.badssl.com is not reachable ATM")
     @RetryingTest(5)
     void selfSigned() throws Exception {
         final String url = "https://self-signed.badssl.com/";
