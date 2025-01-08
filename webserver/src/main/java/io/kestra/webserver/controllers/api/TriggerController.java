@@ -261,6 +261,7 @@ public class TriggerController {
                 // If we are enabling back a schedule trigger,
                 // then we need to handle its recoverMissedSchedules
                 if (current.getDisabled() && !newTrigger.getDisabled() && abstractTrigger instanceof Schedule schedule) {
+                    nextExecutionDate = schedule.nextEvaluationDate();
                     RecoverMissedSchedules recoverMissedSchedules = schedule.getRecoverMissedSchedules();
                     if (recoverMissedSchedules == RecoverMissedSchedules.LAST) {
                         nextExecutionDate = schedule.previousEvaluationDate(conditionContext);
