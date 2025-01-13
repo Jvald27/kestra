@@ -40,6 +40,9 @@ public class ExecutionLogService {
         final AtomicReference<Runnable> disposable = new AtomicReference<>();
 
         return Flux.<Event<LogEntry>>create(emitter -> {
+                // send a first "empty" event so the SSE is correctly initialized in the frontend in case there are no logs
+                emitter.next(Event.of(LogEntry.builder().build()).id("start"));
+
                 // fetch repository first
                 getExecutionLogs(tenantId, executionId, minLevel, List.of(), withAccessControl)
                     .forEach(logEntry -> emitter.next(Event.of(logEntry).id("progress")));

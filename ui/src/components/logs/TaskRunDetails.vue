@@ -498,7 +498,10 @@
                         this.logsSSE = sse;
 
                         this.logsSSE.onmessage = event => {
-                            this.logsBuffer = this.logsBuffer.concat(JSON.parse(event.data));
+                            // we are receiving a first "fake" event to force initializing the connection: ignoring it
+                            if (event.lastEventId !== "start") {
+                                this.logsBuffer = this.logsBuffer.concat(JSON.parse(event.data));
+                            }
 
                             clearTimeout(this.timeout);
                             this.timeout = setTimeout(() => {
