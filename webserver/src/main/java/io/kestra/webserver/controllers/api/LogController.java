@@ -131,6 +131,9 @@ public class LogController {
 
         return Flux
             .<Event<LogEntry>>create(emitter -> {
+                // send a first "empty" event so the SSE is correctly initialized in the frontend in case there are no logs
+                emitter.next(Event.of(LogEntry.builder().build()).id("start"));
+                
                 // fetch repository first
                 logRepository.findByExecutionId(tenantService.resolveTenant(), executionId, minLevel, null)
                     .stream()
