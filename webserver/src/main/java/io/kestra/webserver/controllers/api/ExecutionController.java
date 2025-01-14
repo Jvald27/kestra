@@ -1472,8 +1472,11 @@ public class ExecutionController {
 
         return Flux
             .<Event<Execution>>create(emitter -> {
+                // send a first "empty" event so the SSE is correctly initialized in the frontend in case there are no logs
+                emitter.next(Event.of(Execution.builder().id(executionId).build()).id("start"));
+
                 // already finished execution
-                Execution execution = null;
+                Execution execution;
                 try {
                     execution = Await.until(
                         () -> executionRepository.findById(tenantService.resolveTenant(), executionId).orElse(null),
