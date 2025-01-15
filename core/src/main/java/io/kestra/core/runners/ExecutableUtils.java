@@ -146,7 +146,8 @@ public final class ExecutableUtils {
             "namespace", currentFlow.getNamespace(),
             "flowId", currentFlow.getId(),
             "flowRevision", currentFlow.getRevision(),
-            "taskRunId", currentTaskRun.getId()
+            "taskRunId", currentTaskRun.getId(),
+            "taskId", currentTaskRun.getTaskId()
         ));
         if (currentTaskRun.getValue() != null) {
             variables.put("taskRunValue", currentTaskRun.getValue());
@@ -185,6 +186,10 @@ public final class ExecutableUtils {
 
     @SuppressWarnings("unchecked")
     public static TaskRun manageIterations(Storage storage, TaskRun taskRun, Execution execution, boolean transmitFailed, boolean allowFailure, boolean allowWarning) throws InternalException {
+        if (taskRun.getOutputs() == null) { // FIXME since the change to how we handle terminated subflow, we sometime have null here
+            System.out.println("!!! No output found !!!");
+            return taskRun;
+        }
         Integer numberOfBatches = (Integer) taskRun.getOutputs().get(TASK_VARIABLE_NUMBER_OF_BATCHES);
         var previousTaskRun = execution.findTaskRunByTaskRunId(taskRun.getId());
         if (previousTaskRun == null) {
@@ -257,5 +262,21 @@ public final class ExecutableUtils {
             return State.Type.WARNING;
         }
         return State.Type.SUCCESS;
+    }
+
+    public static SubflowExecutionResult subflowExecutionResultFromChildExecution(RunContext runContext, Flow flow, Execution execution, ExecutableTask<?> executableTask, TaskRun taskRun) {
+        try {
+            return executableTask
+                .createSubflowExecutionResult(runContext, taskRun, flow, execution)
+                .orElse(null);
+        } catch (Exception e) {
+            log.error("Unable to create the Subflow Execution Result", e);
+            // we return a fail subflow execution result to end the flow
+            return SubflowExecutionResult.builder()
+                .executionId(execution.getId())
+                .state(State.Type.FAILED)
+                .parentTaskRun(taskRun.withState(State.Type.FAILED).withAttempts(List.of(TaskRunAttempt.builder().state(new State().withState(State.Type.FAILED)).build())))
+                .build();
+        }
     }
 }

@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
+
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junitpioneer.jupiter.RetryingTest;
@@ -89,6 +91,9 @@ public abstract class AbstractRunnerTest {
 
     @Inject
     private SLATestCase slaTestCase;
+
+    @Inject
+    private ChangeStateTestCase changeStateTestCase;
 
     @Test
     @ExecuteFlow("flows/valids/full.yaml")
@@ -174,6 +179,18 @@ public abstract class AbstractRunnerTest {
     }
 
     @Test
+    @LoadFlows({"flows/valids/restart_always_failed.yaml"})
+    void restartFailedThenFailureWithGlobalErrors() throws Exception {
+        restartCaseTest.restartFailedThenFailureWithGlobalErrors();
+    }
+
+    @RetryingTest(5)
+    @LoadFlows({"flows/valids/restart_local_errors.yaml"})
+    void restartFailedThenFailureWithLocalErrors() throws Exception {
+        restartCaseTest.restartFailedThenFailureWithLocalErrors();
+    }
+
+    @Test
     @LoadFlows({"flows/valids/restart-parent.yaml", "flows/valids/restart-child.yaml"})
     void restartSubflow() throws Exception {
         restartCaseTest.restartSubflow();
@@ -244,7 +261,7 @@ public abstract class AbstractRunnerTest {
         "flows/valids/task-flow.yaml",
         "flows/valids/task-flow-inherited-labels.yaml"})
     void flowWaitFailed() throws Exception {
-            flowCaseTest.waitFailed();
+        flowCaseTest.waitFailed();
     }
 
     @Test
@@ -340,6 +357,12 @@ public abstract class AbstractRunnerTest {
         "flows/valids/for-each-item-outputs.yaml"})
     protected void forEachItemSubflowOutputs() throws Exception {
         forEachItemCaseTest.forEachItemWithSubflowOutputs();
+    }
+
+    @Test
+    @LoadFlows({"flows/valids/restart-for-each-item.yaml", "flows/valids/restart-child.yaml"})
+    void restartForEachItem() throws Exception {
+        forEachItemCaseTest.restartForEachItem();
     }
 
     @Test
@@ -467,5 +490,17 @@ public abstract class AbstractRunnerTest {
 
         assertThat(execution.getTaskRunList(), hasSize(12));
         assertThat(execution.getState().getCurrent(), is(State.Type.SUCCESS));
+    }
+
+    @Test
+    @ExecuteFlow("flows/valids/failed-first.yaml")
+    public void changeStateShouldEndsInSuccess(Execution execution) throws Exception {
+        changeStateTestCase.changeStateShouldEndsInSuccess(execution);
+    }
+
+    @Test
+    @LoadFlows({"flows/valids/failed-first.yaml", "flows/valids/subflow-parent-of-failed.yaml"})
+    public void changeStateInSubflowShouldEndsParentFlowInSuccess() throws Exception {
+        changeStateTestCase.changeStateInSubflowShouldEndsParentFlowInSuccess();
     }
 }

@@ -416,4 +416,16 @@ class ExecutionServiceTest {
         assertThat(killed.findTaskRunsByTaskId("pause").getFirst().getState().getCurrent(), is(State.Type.KILLED));
         assertThat(killed.getState().getHistories(), hasSize(4));
     }
+
+    @Test
+    @ExecuteFlow("flows/valids/failed-first.yaml")
+    void shouldRestartAfterChangeTaskState(Execution execution) throws Exception {
+        assertThat(execution.getState().getCurrent(), is(State.Type.FAILED));
+        assertThat(execution.getTaskRunList(), hasSize(1));
+        assertThat(execution.getTaskRunList().getFirst().getState().getCurrent(), is(State.Type.FAILED));
+
+        Flow flow = flowRepository.findByExecution(execution);
+        Execution markedAs = executionService.markAs(execution, flow, execution.getTaskRunList().getFirst().getId(), State.Type.SUCCESS);
+        assertThat(markedAs.getState().getCurrent(), is(State.Type.RESTARTED));
+    }
 }

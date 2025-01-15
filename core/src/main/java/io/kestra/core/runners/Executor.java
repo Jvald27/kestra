@@ -35,6 +35,7 @@ public class Executor {
     private final List<WorkerTrigger> workerTriggers = new ArrayList<>();
     private WorkerJob workerJobToResubmit;
     private State.Type originalState;
+    private String parentExecutionId;
 
     /**
      * The sequence id should be incremented each time the execution is persisted after mutation.
@@ -166,6 +167,11 @@ public class Executor {
 
     public Executor withExecutionKilled(final List<ExecutionKilledExecution> executionKilled) {
         this.executionKilled = executionKilled;
+        return this;
+    }
+
+    public Executor withParentExecutionId(String parentExecutionId) {
+        this.parentExecutionId = parentExecutionId;
         return this;
     }
 

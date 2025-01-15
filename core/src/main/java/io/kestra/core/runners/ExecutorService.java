@@ -6,6 +6,7 @@ import io.kestra.core.metrics.MetricRegistry;
 import io.kestra.core.models.Label;
 import io.kestra.core.models.executions.*;
 import io.kestra.core.models.flows.Flow;
+import io.kestra.core.models.flows.FlowWithSource;
 import io.kestra.core.models.flows.State;
 import io.kestra.core.models.flows.sla.Violation;
 import io.kestra.core.models.tasks.*;
@@ -864,17 +865,21 @@ public class ExecutorService {
                         );
                     } else {
                         executions.addAll(subflowExecutions);
-                        if (!executableTask.waitForExecution()) {
-                            // send immediately all workerTaskResult to ends the executable task
+                        Optional<FlowWithSource> flow = flowExecutorInterface.findByExecution(subflowExecutions.getFirst().getExecution());
+                        if (flow.isPresent()) {
+                            // add SubflowExecutionResults to notify parents
                             for (SubflowExecution<?> subflowExecution : subflowExecutions) {
                                 Optional<SubflowExecutionResult> subflowExecutionResult = executableTask.createSubflowExecutionResult(
                                     runContext,
-                                    subflowExecution.getParentTaskRun().withState(State.Type.SUCCESS),
-                                    executor.getFlow(),
+                                    // if we didn't wait for the execution, we directly set the state to SUCCESS
+                                    executableTask.waitForExecution() ? subflowExecution.getParentTaskRun() : subflowExecution.getParentTaskRun().withState(State.Type.SUCCESS),
+                                    flow.get(),
                                     subflowExecution.getExecution()
                                 );
                                 subflowExecutionResult.ifPresent(subflowExecutionResults::add);
                             }
+                        } else {
+                            log.error("Unable to find flow for execution {}", subflowExecutions.getFirst().getExecution().getId());
                         }
                     }
                 } catch (Exception e) {
@@ -1018,6 +1023,15 @@ public class ExecutorService {
             in ? "<< IN " : ">> OUT",
             value.getClass().getSimpleName(),
             value.getParentTaskRun().toStringState()
+        );
+    }
+
+    public void log(Logger log, Boolean in, SubflowExecutionEnd value) {
+        log.debug(
+            "{} {} : {}",
+            in ? "<< IN " : ">> OUT",
+            value.getClass().getSimpleName(),
+            value.toStringState()
         );
     }
 
