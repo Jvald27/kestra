@@ -185,7 +185,8 @@
     "current": "current",
     "change state": "Change state",
     "change state done": "Task state has been updated",
-    "change state confirm": "Are you sure you want to change the task run state for the <code>{task}</code> task in execution <code>{id}</code>?",
+    "change state confirm": "Are you sure you want to change the task run state for the <code>{task}</code> task in execution <code>{id}</code>?<br/>It will then restart the execution from the next task and restart the parent execution if any.",
+    "change state current state": "Current status is:",
     "change state hint": {
       "WARNING": [
         "The flow will be marked as WARNING.",
@@ -976,7 +977,6 @@
     },
     "open sidebar": "open sidebar",
     "close sidebar": "close sidebar",
-    "change_status": "Change status",
     "files": "Files",
     "optional": "Optional",
     "no_data": "Looks like there's nothing here… yet!<br/>Adjust your filters, or give it another go!",

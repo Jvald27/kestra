@@ -945,13 +945,13 @@ public class ExecutionController {
 
     @ExecuteOn(TaskExecutors.IO)
     @Post(uri = "/{executionId}/change-status")
-    @Operation(tags = {"Executions"}, summary = "Change the status of an execution")
+    @Operation(tags = {"Executions"}, summary = "Change the state of an execution")
     public Execution changeStatus(
         @Parameter(description = "The execution id") @PathVariable String executionId,
-        @Parameter(description = "The new status of the execution") @NotNull @QueryValue State.Type status
+        @Parameter(description = "The new state of the execution") @NotNull @QueryValue State.Type status
     ) throws QueueException {
         if (!status.isTerminated()) {
-            throw new IllegalArgumentException("You can only change the status of an execution to a terminal state.");
+            throw new IllegalArgumentException("You can only change the state of an execution to a terminal state.");
         }
 
         Optional<Execution> execution = executionRepository.findById(tenantService.resolveTenant(), executionId);
@@ -960,7 +960,7 @@ public class ExecutionController {
         }
 
         if (!execution.get().getState().isTerminated()) {
-            throw new IllegalArgumentException("You can only change the status of a terminated execution.");
+            throw new IllegalArgumentException("You can only change the state of a terminated execution.");
         }
 
         Execution updated = execution.get().withState(status);
@@ -973,15 +973,15 @@ public class ExecutionController {
 
     @ExecuteOn(TaskExecutors.IO)
     @Post(uri = "/change-status/by-ids")
-    @Operation(tags = {"Executions"}, summary = "Change status of executions by id")
+    @Operation(tags = {"Executions"}, summary = "Change executions state by id")
     @ApiResponse(responseCode = "200", description = "On success", content = {@Content(schema = @Schema(implementation = BulkResponse.class))})
-    @ApiResponse(responseCode = "422", description = "Changed status with errors", content = {@Content(schema = @Schema(implementation = BulkErrorResponse.class))})
+    @ApiResponse(responseCode = "422", description = "Changed state with errors", content = {@Content(schema = @Schema(implementation = BulkErrorResponse.class))})
     public HttpResponse<?> changeStatusById(
         @Parameter(description = "The execution id") @Body List<String> executionsId,
-        @Parameter(description = "The new status of the executions") @NotNull @QueryValue State.Type newStatus
+        @Parameter(description = "The new state of the executions") @NotNull @QueryValue State.Type newStatus
     ) throws QueueException {
         if (!newStatus.isTerminated()) {
-            throw new IllegalArgumentException("You can only change the status of an execution to a terminal state.");
+            throw new IllegalArgumentException("You can only change the state of an execution to a terminal state.");
         }
 
         List<Execution> executions = new ArrayList<>();
@@ -1013,7 +1013,7 @@ public class ExecutionController {
         if (!invalids.isEmpty()) {
             return HttpResponse.badRequest(BulkErrorResponse
                 .builder()
-                .message("invalid bulk change execution status")
+                .message("invalid bulk change executions state")
                 .invalids(invalids)
                 .build()
             );
@@ -1031,9 +1031,9 @@ public class ExecutionController {
 
     @ExecuteOn(TaskExecutors.IO)
     @Post(uri = "/change-status/by-query")
-    @Operation(tags = {"Executions"}, summary = "Change executions status by query parameters")
+    @Operation(tags = {"Executions"}, summary = "Change executions state by query parameters")
     @ApiResponse(responseCode = "200", description = "On success", content = {@Content(schema = @Schema(implementation = BulkResponse.class))})
-    @ApiResponse(responseCode = "422", description = "Changed status with errors", content = {@Content(schema = @Schema(implementation = BulkErrorResponse.class))})
+    @ApiResponse(responseCode = "422", description = "Changed state with errors", content = {@Content(schema = @Schema(implementation = BulkErrorResponse.class))})
     public HttpResponse<?> changeStatusByQuery(
         @Parameter(description = "A string filter") @Nullable @QueryValue(value = "q") String query,
         @Parameter(description = "The scope of the executions to include") @Nullable @QueryValue(value = "scope") List<FlowScope> scope,
@@ -1049,7 +1049,7 @@ public class ExecutionController {
         @Parameter(description = "A labels filter as a list of 'key:value'") @Nullable @QueryValue @Format("MULTI") List<String> labels,
         @Parameter(description = "The trigger execution id") @Nullable @QueryValue String triggerExecutionId,
         @Parameter(description = "A execution child filter") @Nullable @QueryValue ExecutionRepositoryInterface.ChildFilter childFilter,
-        @Parameter(description = "The new status of the executions") @NotNull @QueryValue State.Type newStatus
+        @Parameter(description = "The new state of the executions") @NotNull @QueryValue State.Type newStatus
     ) throws QueueException {
         validateTimeline(startDate, endDate);
 
