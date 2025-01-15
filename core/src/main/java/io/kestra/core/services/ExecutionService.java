@@ -317,7 +317,11 @@ public class ExecutionService {
             taskRun -> taskRun.getId().equals(taskRunId)
         );
 
-        Execution newExecution = execution;
+        List<Label> newLabels = new ArrayList<>(execution.getLabels());
+        if (!newLabels.contains(new Label(Label.RESTARTED, "true"))) {
+            newLabels.add(new Label(Label.RESTARTED, "true"));
+        }
+        Execution newExecution = execution.withLabels(newLabels).withMetadata(execution.getMetadata().nextAttempt());
 
         for (String s : taskRunToRestart) {
             TaskRun originalTaskRun = newExecution.findTaskRunByTaskRunId(s);

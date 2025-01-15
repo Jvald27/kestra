@@ -322,6 +322,8 @@ class ExecutionServiceTest {
         Execution restart = executionService.markAs(execution, flow, execution.findTaskRunByTaskIdAndValue("2-1_seq", List.of("value 1")).getId(), State.Type.FAILED);
 
         assertThat(restart.getState().getCurrent(), is(State.Type.RESTARTED));
+        assertThat(restart.getLabels(), hasItem(new Label(Label.RESTARTED, "true")));
+        assertThat(restart.getMetadata().getAttemptNumber(), is(2));
         assertThat(restart.getState().getHistories(), hasSize(4));
         assertThat(restart.getTaskRunList(), hasSize(11));
         assertThat(restart.findTaskRunByTaskIdAndValue("1_each", List.of()).getState().getCurrent(), is(State.Type.RUNNING));
@@ -332,6 +334,7 @@ class ExecutionServiceTest {
         restart = executionService.markAs(execution, flow, execution.findTaskRunByTaskIdAndValue("2-1-2_t2", List.of("value 1")).getId(), State.Type.FAILED);
 
         assertThat(restart.getState().getCurrent(), is(State.Type.RESTARTED));
+        assertThat(restart.getLabels(), hasItem(new Label(Label.RESTARTED, "true")));
         assertThat(restart.getState().getHistories(), hasSize(4));
         assertThat(restart.getTaskRunList(), hasSize(11));
         assertThat(restart.findTaskRunByTaskIdAndValue("1_each", List.of()).getState().getCurrent(), is(State.Type.RUNNING));
