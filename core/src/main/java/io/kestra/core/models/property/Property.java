@@ -11,7 +11,10 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.serializers.JacksonMapper;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -168,10 +171,20 @@ public class Property<T> {
      */
     public static <T, K,V> T asMap(Property<T> property, RunContext runContext, Class<K> keyClass, Class<V> valueClass) throws IllegalVariableEvaluationException {
         if (property.value == null) {
-            String rendered =  runContext.render(property.expression);
-            JavaType type = MAPPER.getTypeFactory().constructMapType(Map.class, keyClass, valueClass);
+            JavaType targetMapType = MAPPER.getTypeFactory().constructMapType(Map.class, keyClass, valueClass);
+
             try {
-                property.value = MAPPER.readValue(rendered, type);
+                String trimmedExpression = property.expression.trim();
+                // We need to detect if the expression is already a map or if it's a pebble expression (for eg. referencing a variable containing a map).
+                // Doing that allows us to, if it's an expression, first render then read it as a map.
+                if (trimmedExpression.startsWith("{{") && trimmedExpression.endsWith("}}")) {
+                    property.value = MAPPER.readValue(runContext.render(property.expression), targetMapType);
+                }
+                // Otherwise if it's already a map we read it as a map first then render it from run context which handle map rendering by rendering each entry of the map (otherwise it will fail with nested expressions in values for eg.)
+                else {
+                    Map asRawMap = MAPPER.readValue(property.expression, Map.class);
+                    property.value = MAPPER.convertValue(runContext.render(asRawMap), targetMapType);
+                }
             } catch (JsonProcessingException e) {
                 throw new IllegalVariableEvaluationException(e);
             }
