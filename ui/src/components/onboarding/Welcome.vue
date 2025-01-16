@@ -188,7 +188,7 @@
 
             .title {
                 font-weight: 500;
-                color: var(--bs-gray-900-lighten-5);
+                color: var(--ks-content-secondary);
                 display: flex;
                 align-items: center;
                 white-space: nowrap;
@@ -201,7 +201,7 @@
                     &::before,
                     &::after {
                         content: "";
-                        background-color: var(--bs-gray-600-lighten-10);
+                        background-color: var(--ks-border-primary);
                         height: 2px;
                         width: 50%;
                     }
