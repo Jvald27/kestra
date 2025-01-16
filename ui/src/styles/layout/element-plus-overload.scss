@@ -362,13 +362,8 @@ form.ks-horizontal {
 
     --el-table-header-text-color: var(--ks-content-primary);
     --el-table-row-hover-bg-color: var(--bs-gray-200);
-    --el-table-header-bg-color: #f5f5ff;
-    --el-table-tr-bg-color: var(--bs-white);
-
-    html.dark & {
-        --el-table-tr-bg-color: var(--ks-background-card);
-        --el-table-header-bg-color: var(--ks-background-input);
-    }
+    --el-table-header-bg-color: var(--ks-background-table-header);
+    --el-table-tr-bg-color: var(--ks-background-card);
 
     outline: 1px solid var(--ks-border-primary);
     border-radius: var(--bs-border-radius-lg);
