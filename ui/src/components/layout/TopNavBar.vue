@@ -122,7 +122,6 @@
                         path: this.currentFavURI
                     })
                 } else {
-                    console.log(this.title, this.breadcrumb)
                     this.$store.dispatch("bookmarks/add", {
                         path: this.currentFavURI,
                         label: this.breadcrumb?.length ? `${this.breadcrumb[this.breadcrumb.length-1].label}: ${this.title}` : this.title,

@@ -8,7 +8,7 @@
         <el-icon v-if="cursor" class="icon_container" :style="{color: iconColor}" :size="25">
             <MenuRight />
         </el-icon>
-        <span :class="levelClasses" class="border header-badge log-level el-tag noselect">{{ log.level }}</span>
+        <span :style="levelStyle" class="el-tag log-level">{{ log.level }}</span>
         <div class="log-content d-inline-block">
             <span v-if="title" class="fw-bold">{{ log.taskId ?? log.flowId ?? "" }}</span>
             <div
@@ -131,9 +131,13 @@
                 }
                 return metaWithValue;
             },
-            levelClasses() {
+            levelStyle() {
                 const lowerCaseLevel = this.log?.level?.toLowerCase();
-                return `log-content-${lowerCaseLevel} log-border-${lowerCaseLevel} log-bg-${lowerCaseLevel}`;
+                return {
+                    "border-color": `var(--ks-log-border-${lowerCaseLevel})`,
+                    "color": `var(--ks-log-content-${lowerCaseLevel})`,
+                    "background-color": `var(--ks-log-background-${lowerCaseLevel})`,
+                };
             },
             filtered() {
                 return (
@@ -239,16 +243,7 @@ div.line {
             border-radius: 4px;
         }
     }
-
-    .noselect {
-        user-select: none;
-        color: $white;
-
-        html:not(.dark) & {
-            color: $black;
-        }
-    }
-
+    
     .message {
         line-height: 1.8;
     }
@@ -256,6 +251,12 @@ div.line {
     p, :deep(.log-content p) {
         display: inline;
         margin-bottom: 0;
+    }
+
+    .log-level {
+        padding: 0.25rem;
+        border: 1px solid var(--ks-border-primary);
+        user-select: none;
     }
 }
 </style>

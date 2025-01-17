@@ -181,15 +181,15 @@
                 </div>
                 <ExecutionsInProgress
                     v-else
-                    :flow="props.flowID"
+                    :flow="props.flowId"
                     :namespace="props.namespace"
                     class="me-2"
                 />
             </el-col>
             <el-col v-if="props.flow" :xs="24" :lg="10">
                 <ExecutionsNextScheduled
-                    :flow="props.flowID"
-                    :namespace="filters.namespace"
+                    :flow="props.flowId"
+                    :namespace="props.namespace"
                     class="mx-2"
                 />
             </el-col>
@@ -202,8 +202,8 @@
                 />
                 <ExecutionsNextScheduled
                     v-else-if="isAllowedTriggers"
-                    :flow="props.flowID"
-                    :namespace="filters.namespace"
+                    :flow="props.flowId"
+                    :namespace="props.namespace"
                     class="ms-2"
                 />
                 <ExecutionsEmptyNextScheduled v-else />
@@ -213,7 +213,7 @@
         <el-row v-if="!props.flow">
             <el-col :xs="24">
                 <ExecutionsNamespace
-                    :data="filteredNamespaceExecutions"
+                    :data="namespaceExecutions"
                     :total="stats.total"
                 />
             </el-col>
@@ -265,7 +265,7 @@
     import BookOpenOutline from "vue-material-design-icons/BookOpenOutline.vue";
     import permission from "../../models/permission.js";
     import action from "../../models/action.js";
-    // import {storageKeys} from "../../utils/constants";
+    import _cloneDeep from "lodash/cloneDeep.js";
 
     const router = useRouter();
     const route = useRoute();
@@ -273,7 +273,6 @@
     const {t} = useI18n({useScope: "global"});
     const user = store.getters["auth/user"];
 
-    // const defaultNamespace = localStorage.getItem(storageKeys.DEFAULT_NAMESPACE) || null;
     const props = defineProps({
         embed: {
             type: Boolean,
@@ -283,7 +282,7 @@
             type: Boolean,
             default: false,
         },
-        flowID: {
+        flowId: {
             type: String,
             required: false,
             default: null,
@@ -309,7 +308,10 @@
         let dashboard = {};
 
         if (route.name === "home") {
-            router.replace({params: {...route.params, id: v?.id ?? "default"}});
+            router.replace({
+                params: {...route.params, id: v?.id ?? "default"},
+                query: {...route.query},
+            });
             if (v && v.id !== "default") {
                 dashboard = await store.dispatch("dashboard/load", v.id);
             }
@@ -340,20 +342,15 @@
             t("dashboard.no_flow_description"))
         : undefined;
 
-    const filters = ref({
-        namespace: null,
-        state: [],
-        startDate: null,
-        endDate: null,
-        timeRange: "PT720H",
-        scope: ["USER"],
-    });
-
     const defaultNumbers = {flows: 0, triggers: 0};
     const numbers = ref({...defaultNumbers});
     const fetchNumbers = () => {
+        if (props.flowId) {
+            return;
+        }
+
         store.$http
-            .post(`${apiUrl(store)}/stats/summary`, route.query)
+            .post(`${apiUrl(store)}/stats/summary`, mergeQuery())
             .then((response) => {
                 if (!response.data) return;
                 numbers.value = {...defaultNumbers, ...response.data};
@@ -370,21 +367,27 @@
             ),
         );
 
-        const total = Object.values(statesToCount).reduce(
+        const total = Object.values(counts).reduce(
             (sum, count) => sum + count,
             0,
         );
-        const successStates = ["SUCCESS", "CANCELLED", "WARNING"];
-        const failedStates = ["FAILED", "KILLED", "RETRIED"];
+
+        const totalTerminated = Object.values(statesToCount).reduce(
+            (sum, count) => sum + count,
+            0,
+        );
+
+        const successStates = ["SUCCESS", "CANCELLED", "WARNING", "SKIPPED"];
+        const failedStates = ["FAILED", "KILLED"];
         const sumStates = (states) =>
             states.reduce((sum, state) => sum + (statesToCount[state] || 0), 0);
-
         const successRatio =
-            total > 0 ? (sumStates(successStates) / total) * 100 : 0;
-        const failedRatio = total > 0 ? (sumStates(failedStates) / total) * 100 : 0;
+            totalTerminated > 0 ? (sumStates(successStates) / totalTerminated) * 100 : 0;
+        const failedRatio = totalTerminated > 0 ? (sumStates(failedStates) / totalTerminated) * 100 : 0;
 
         return {
-            total,
+            total: total,
+            totalTerminated: totalTerminated,
             success: `${successRatio.toFixed(2)}%`,
             failed: `${failedRatio.toFixed(2)}%`,
         };
@@ -407,8 +410,23 @@
             return accumulator;
         }, null);
     };
+
+    const mergeQuery = () => {
+        let queryFilter = _cloneDeep(route.query);
+
+        if (props.namespace) {
+            queryFilter["namespace"] = props.namespace;
+        }
+
+        if (props.flowId) {
+            queryFilter["flowId"] = props.flowId;
+        }
+
+        return queryFilter;
+    }
+
     const fetchExecutions = () => {
-        store.dispatch("stat/daily", route.query).then((response) => {
+        store.dispatch("stat/daily", mergeQuery()).then((response) => {
             const sorted = response.sort(
                 (a, b) => new Date(b.date) - new Date(a.date),
             );
@@ -425,84 +443,21 @@
     const graphData = computed(() => store.state.stat.daily || []);
 
     const namespaceExecutions = ref({});
-    const filteredNamespaceExecutions = computed(() => {
-        const namespace = filters.value.namespace;
 
-        return !namespace
-            ? namespaceExecutions.value
-            : {[namespace]: namespaceExecutions.value[namespace]};
-    });
     const fetchNamespaceExecutions = () => {
-        store.dispatch("stat/dailyGroupByNamespace").then((response) => {
+        store.dispatch("stat/dailyGroupByNamespace", mergeQuery()).then((response) => {
             namespaceExecutions.value = response;
         });
     };
 
     const logs = ref([]);
     const fetchLogs = () => {
-        store.dispatch("stat/logDaily", route.query).then((response) => {
+        store.dispatch("stat/logDaily", mergeQuery()).then((response) => {
             logs.value = response;
         });
     };
 
-    // const handleDatesUpdate = (dates) => {
-    //     const {startDate, endDate, timeRange} = dates;
-
-    //     if (startDate && endDate) {
-    //         filters.value = {...filters.value, startDate, endDate, timeRange};
-    //     } else if (timeRange) {
-    //         filters.value = {
-    //             ...filters.value,
-    //             startDate: moment()
-    //                 .subtract(moment.duration(timeRange).as("milliseconds"))
-    //                 .toISOString(true),
-    //             endDate: moment().toISOString(true),
-    //             timeRange,
-    //         };
-    //     }
-
-    //     return Promise.resolve(filters.value);
-    // };
-
-    // const updateParams = async (params) => {
-    //     const completeParams = await handleDatesUpdate({
-    //         ...filters.value,
-    //         ...params,
-    //     });
-
-    //     filters.value = {
-    //         namespace: props.namespace ?? completeParams.namespace,
-    //         flowId: props.flowID ?? null,
-    //         state: completeParams.state?.filter(Boolean).length
-    //             ? [].concat(completeParams.state)
-    //             : undefined,
-    //         startDate: completeParams.startDate,
-    //         endDate: completeParams.endDate,
-    //         scope: completeParams.scope?.filter(Boolean).length
-    //             ? [].concat(completeParams.scope)
-    //             : undefined,
-    //     };
-
-    //     completeParams.flowId = props.flowID ?? null;
-
-    //     delete completeParams.timeRange;
-    //     for (const key in completeParams) {
-    //         if (completeParams[key] == null) {
-    //             delete completeParams[key];
-    //         }
-    //     }
-
-    //     router.push({query: completeParams}).then(fetchAll());
-    // };
-
     const fetchAll = async () => {
-        // if (!route.query.startDate || !route.query.endDate) {
-        //     route.query.startDate = moment()
-        //         .subtract(moment.duration("PT720H").as("milliseconds"))
-        //         .toISOString(true);
-        //     route.query.endDate = moment().toISOString(true);
-        // }
-
         route.query.startDate = route.query.timeRange
             ? moment()
                 .subtract(
@@ -534,26 +489,12 @@
     const isAllowedTriggers = computed(() => {
         return (
             user &&
-            user.isAllowed(permission.FLOW, action.READ, filters.value.namespace)
+            user.isAllowed(permission.FLOW, action.READ, props.value?.namespace)
         );
     });
 
     onBeforeMount(() => {
         handleCustomUpdate(route.params?.id ? {id: route.params?.id} : undefined);
-
-        // if (props.flowID) {
-        //     router.replace({query: {...route.query, flowId: props.flowID}});
-        // }
-
-    // if (!route.query.namespace && props.restoreURL) {
-    //     router.replace({query: {...route.query, namespace: defaultNamespace}});
-    //     filters.value.namespace = route.query.namespace || defaultNamespace;
-    // }
-    // else {
-    //     filters.value.namespace = null
-    // }
-
-    // updateParams(route.query);
     });
 
     watch(

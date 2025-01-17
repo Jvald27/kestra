@@ -1,15 +1,17 @@
 <template>
     <TaskEditor v-model="yaml" :section @update:model-value="validateTask" />
 
-    <hr>
+    <template v-if="yaml">
+        <hr>
 
-    <div class="d-flex justify-content-between">
-        <div class="d-flex align-items-center">
-            <ValidationError :errors link />
+        <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+                <ValidationError :errors link />
+            </div>
+
+            <Save @click="saveTask" :what="route.query.section?.toString()" />
         </div>
-
-        <Save @click="saveTask" :what="route.query.section?.toString()" />
-    </div>
+    </template>
 </template>
 
 <script setup lang="ts">
@@ -81,8 +83,6 @@
         );
 
         if (route.query.section === SECTIONS.TRIGGERS.toLowerCase()) {
-            console.log("Update trigger");
-
             const existingTask = YamlUtils.checkTaskAlreadyExist(
                 source,
                 CURRENT.value,

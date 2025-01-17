@@ -41,7 +41,7 @@
                 />
             </div>
         </drawer>
-        <div class="w-100">
+        <div class="w-100 mb-3">
             <div>
                 <div
                     class="d-flex w-100 mb-2"

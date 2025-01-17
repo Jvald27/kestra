@@ -441,7 +441,7 @@
 
     // To Separate through Line
     :deep(.vue-recycle-scroller__item-view) {
-        border-bottom: 2px solid var(--ks-border-primary);
+        border-bottom: 1px solid var(--ks-border-primary);
         margin-bottom: 10px;
 
         &:last-child {
@@ -456,23 +456,6 @@
     :deep(.log-wrapper) {
         > .vue-recycle-scroller__item-wrapper > .vue-recycle-scroller__item-view > div {
             border-radius: var(--bs-border-radius-lg);
-        }
-
-        .attempt-wrapper {
-            margin-bottom: 0;
-            border: 2px solid var(--ks-border-primary);
-
-            tbody:last-child & {
-                border-bottom: 2px solid var(--ks-border-primary);
-            }
-
-            .attempt-header {
-                padding: .5rem;
-            }
-
-            .line {
-                padding: .5rem;
-            }
         }
     }
 </style>

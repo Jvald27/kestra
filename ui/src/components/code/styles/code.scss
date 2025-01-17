@@ -33,6 +33,7 @@ $code-font-sm: var(--el-font-size-small);
         --el-disabled-text-color: #{$code-gray-700};
 
         .el-input__inner {
+            color: $code-gray-700;
             font-size: $code-font-sm;
         }
     }

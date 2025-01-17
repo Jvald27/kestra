@@ -435,10 +435,7 @@
     "show documentation": "Dokumentation anzeigen",
     "focus task": "Klicken Sie auf ein Element, um dessen Dokumentation zu sehen.",
     "validate": "Validieren",
-    "add global error handler": "Globalen Fehler-Handler hinzufügen",
     "add error handler": "Fehler-Handler hinzufügen",
-    "add trigger": "Trigger hinzufügen",
-    "edit metadata": "Metadaten bearbeiten",
     "taskDefaults": "Task-Standards",
     "disabled": "Deaktiviert",
     "before": "vor",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "Kein Code-Editor",
-        "yaml": "YAML-Editor"
+        "yaml": "YAML-Editor",
+        "label": "Label",
+        "variable": "Variable"
       },
       "adding": "+ {what} hinzufügen"
     },

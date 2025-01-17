@@ -282,7 +282,10 @@ public abstract class AbstractJdbcFlowRepository extends AbstractJdbcRepository 
                 .selectCount()
                 .from(fromLastRevision(true))
                 .where(this.defaultFilter(tenantId))
-                .and(NAMESPACE_FIELD.eq(namespace))
+                .and(DSL.or(
+                    NAMESPACE_FIELD.likeIgnoreCase(namespace + ".%"),
+                    NAMESPACE_FIELD.eq(namespace)
+                ))
                 .fetchOne(0, int.class));
     }
 

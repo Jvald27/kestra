@@ -435,10 +435,7 @@
     "show documentation": "显示文档",
     "focus task": "点击任何元素以查看其文档。",
     "validate": "验证",
-    "add global error handler": "添加全局错误处理程序",
     "add error handler": "添加错误处理程序",
-    "add trigger": "添加触发器",
-    "edit metadata": "编辑元数据",
     "taskDefaults": "任务默认值",
     "disabled": "禁用",
     "before": "之前",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "无代码编辑器",
-        "yaml": "YAML编辑器"
+        "yaml": "YAML编辑器",
+        "label": "标签",
+        "variable": "变量"
       },
       "adding": "+ 添加{what}"
     },

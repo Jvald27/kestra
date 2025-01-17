@@ -435,10 +435,7 @@
     "show documentation": "ドキュメントを表示",
     "focus task": "任意の要素をクリックしてそのドキュメントを表示します。",
     "validate": "検証",
-    "add global error handler": "グローバルエラーハンドラを追加",
     "add error handler": "エラーハンドラを追加",
-    "add trigger": "triggerを追加",
-    "edit metadata": "メタデータを編集",
     "taskDefaults": "taskのデフォルト設定",
     "disabled": "無効",
     "before": "前",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "コードエディタなし",
-        "yaml": "YAMLエディター"
+        "yaml": "YAMLエディター",
+        "label": "ラベル",
+        "variable": "変数"
       },
       "adding": "+ {what}を追加"
     },

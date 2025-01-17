@@ -498,11 +498,8 @@
     "show documentation": "Show documentation",
     "focus task": "Click on any element to see its documentation.",
     "validate": "Validate",
-    "add global error handler": "Add global error handler",
     "add error handler": "Add an error handler",
-    "add trigger": "Add trigger",
     "export_to_file": "Export to file",
-    "edit metadata": "Edit Metadata",
     "taskDefaults": "Task Defaults",
     "disabled": "Disabled",
     "before": "before",
@@ -1067,7 +1064,9 @@
       "adding": "+ Add a {what}",
       "labels": {
         "yaml": "YAML Editor",
-        "no_code": "No Code Editor"
+        "no_code": "No Code Editor",
+        "label": "Label",
+        "variable": "Variable"
       },
       "sections": {
         "main": "Main properties",

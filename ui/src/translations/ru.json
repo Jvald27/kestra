@@ -435,10 +435,7 @@
     "show documentation": "Показать документацию",
     "focus task": "Нажмите на любой элемент, чтобы увидеть его документацию.",
     "validate": "Проверить",
-    "add global error handler": "Добавить глобальный обработчик ошибок",
     "add error handler": "Добавить обработчик ошибок",
-    "add trigger": "Добавить trigger",
-    "edit metadata": "Редактировать метаданные",
     "taskDefaults": "Задача по умолчанию",
     "disabled": "Отключено",
     "before": "до",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "Редактор No Code",
-        "yaml": "Редактор YAML"
+        "yaml": "Редактор YAML",
+        "label": "Метка",
+        "variable": "Переменная"
       },
       "adding": "+ Добавить {what}"
     },

@@ -182,8 +182,8 @@ public class ForEach extends Sequential implements FlowableTask<VoidOutput> {
             GraphUtils.parallel(
                 subGraph,
                 this.getTasks(),
-                this.getErrors(),
-                this.getFinally(),
+                this.errors,
+                this._finally,
                 taskRun,
                 execution
             );

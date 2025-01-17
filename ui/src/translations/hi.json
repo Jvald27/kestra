@@ -435,10 +435,7 @@
     "show documentation": "दस्तावेज़ दिखाएं",
     "focus task": "किसी भी तत्व पर क्लिक करें ताकि उसका दस्तावेज़ देखा जा सके।",
     "validate": "मान्य करें",
-    "add global error handler": "वैश्विक त्रुटि हैंडलर जोड़ें",
     "add error handler": "एक त्रुटि हैंडलर जोड़ें",
-    "add trigger": "Trigger जोड़ें",
-    "edit metadata": "मेटाडेटा संपादित करें",
     "taskDefaults": "taskDefaults",
     "disabled": "अक्षम",
     "before": "पहले",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "कोड संपादक नहीं",
-        "yaml": "YAML संपादक"
+        "yaml": "YAML संपादक",
+        "label": "लेबल",
+        "variable": "वेरिएबल"
       },
       "adding": "+ एक {what} जोड़ें"
     },

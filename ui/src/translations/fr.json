@@ -437,10 +437,7 @@
     "show documentation": "Afficher la documentation",
     "focus task": "Cliquer sur une tâche pour voir sa documentation",
     "validate": "Valider",
-    "add global error handler": "Gérer les erreurs globales",
     "add error handler": "Gérer les erreurs",
-    "add trigger": "Ajouter un déclencheur",
-    "edit metadata": "Éditer les métadonnées",
     "taskDefaults": "Valeur de tâches par défaut",
     "disabled": "Désactivé",
     "before": "avant",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "Éditeur sans code",
-        "yaml": "Éditeur YAML"
+        "yaml": "Éditeur YAML",
+        "label": "Étiquette",
+        "variable": "Variable"
       },
       "adding": "+ Ajouter un {what}"
     },

@@ -435,10 +435,7 @@
     "show documentation": "문서 보기",
     "focus task": "문서를 보려면 요소를 클릭하세요.",
     "validate": "유효성 검사",
-    "add global error handler": "전역 오류 처리기 추가",
     "add error handler": "오류 처리기 추가",
-    "add trigger": "trigger 추가",
-    "edit metadata": "메타데이터 편집",
     "taskDefaults": "Task 기본값",
     "disabled": "비활성화됨",
     "before": "이전",
@@ -1084,7 +1081,9 @@
       },
       "labels": {
         "no_code": "코드 없는 편집기",
-        "yaml": "YAML 편집기"
+        "yaml": "YAML 편집기",
+        "label": "레이블",
+        "variable": "변수"
       },
       "adding": "+ {what} 추가"
     },

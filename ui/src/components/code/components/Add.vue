@@ -1,5 +1,5 @@
 <template>
-    <div @click="emits('add', props.what)" class="pb-3 adding">
+    <div @click="emits('add', props.what)" class="py-2 adding">
         {{ t("no_code.adding", {what: props.what}) }}
     </div>
 </template>

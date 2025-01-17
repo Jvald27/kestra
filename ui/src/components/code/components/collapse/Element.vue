@@ -13,7 +13,6 @@
 <script setup lang="ts">
     import {computed} from "vue";
 
-    // TODO: Update import once https://github.com/kestra-io/kestra/pull/6643 is merged
     import TaskIcon from "@kestra-io/ui-libs/src/components/misc/TaskIcon.vue";
 
     const props = defineProps({

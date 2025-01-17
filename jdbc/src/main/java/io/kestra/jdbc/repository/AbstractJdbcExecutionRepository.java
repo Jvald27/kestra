@@ -665,7 +665,10 @@ public abstract class AbstractJdbcExecutionRepository extends AbstractJdbcReposi
                     .and(START_DATE_FIELD.lessOrEqual(finalEndDate.toOffsetDateTime()));
 
                 if (namespace != null) {
-                    selectCount = selectCount.and(NAMESPACE_FIELD.eq(namespace));
+                    selectCount = selectCount.and(DSL.or(
+                        NAMESPACE_FIELD.likeIgnoreCase(namespace + ".%"),
+                        NAMESPACE_FIELD.eq(namespace)
+                    ));
                 }
 
                 Map<String, Result<Record3<String, String, Long>>> resultByNamespace = selectCount

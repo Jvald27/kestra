@@ -108,15 +108,19 @@
     }
 }
 
-
 .el-input-file.custom-upload {
     font-size: var(--el-font-size-base);
     border-radius: var(--el-border-radius-base);
     border: 1px solid var(--ks-border-primary);
     white-space: nowrap;
 
+    form {
+        line-height: 27px;
+    }
+
     .el-input__wrapper {
         background-color: transparent;
+        box-shadow: none;
     }
 
     label {
@@ -1183,4 +1187,8 @@ form.ks-horizontal {
 
 .text-base {
     font-size: var(--el-font-size-base);
+}
+
+.el-empty {
+    background-color: var(--ks-background-card);
 }

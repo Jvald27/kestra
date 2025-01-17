@@ -1,8 +1,8 @@
 <template>
     <span v-if="required" class="me-1 text-danger">*</span>
-    <span class="label">{{ label }}</span>
+    <span v-if="label" class="label">{{ label }}</span>
     <div class="mt-1 mb-2 wrapper">
-        <el-input v-model="input" @input="handleInput" :disabled />
+        <el-input v-model="input" @input="handleInput" :placeholder :disabled />
     </div>
 </template>
 
@@ -12,7 +12,8 @@
     const emits = defineEmits(["update:modelValue"]);
     const props = defineProps({
         modelValue: {type: [String, Number, Boolean], default: undefined},
-        label: {type: String, default: ""},
+        label: {type: String, default: undefined},
+        placeholder: {type: String, default: ""},
         required: {type: Boolean, default: false},
         disabled: {type: Boolean, default: false},
     });

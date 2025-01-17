@@ -36,7 +36,8 @@
             </slot>
         </nav>
         <slot name="absolute" />
-        <div class="editor-container" ref="container" :class="containerClass">
+        <span v-if="label" class="label">{{ label }}</span>
+        <div class="editor-container" ref="container" :class="[containerClass, {'mb-2': label}]">
             <div ref="editorContainer" class="editor-wrapper position-relative">
                 <monaco-editor
                     ref="monacoEditor"
@@ -98,6 +99,7 @@
             lineNumbers: {type: Boolean, default: undefined},
             minimap: {type: Boolean, default: false},
             creating: {type: Boolean, default: false},
+            label: {type: String, default: undefined},
         },
         components: {
             MonacoEditor,
@@ -473,6 +475,10 @@
         },
     };
 </script>
+
+<style scoped lang="scss">
+@import "../code/styles/code.scss";
+</style>
 
 <style lang="scss">
 @import "@kestra-io/ui-libs/src/scss/color-palette.scss";

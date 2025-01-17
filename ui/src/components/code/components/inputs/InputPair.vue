@@ -10,48 +10,54 @@
             <el-col :span="6">
                 <InputText
                     :model-value="key"
+                    :placeholder="t('key')"
                     @update:model-value="(changed) => updateKey(key, changed)"
                 />
             </el-col>
             <el-col :span="16">
                 <InputText
-                    :v-model="value"
+                    :model-value="value"
+                    :placeholder="t('value')"
                     @update:model-value="(changed) => updateValue(key, changed)"
                 />
             </el-col>
             <el-col :span="2" class="col align-self-center delete">
-                <DeleteOutline @click="removeLabel(key)" />
+                <DeleteOutline @click="removePair(key)" />
             </el-col>
         </el-row>
 
-        <Add what="label" @add="addLabel()" />
+        <Add :what="props.property" @add="addPair()" />
     </div>
 </template>
 
 <script setup lang="ts">
     import {PropType} from "vue";
 
-    import {LabelField} from "../../utils/types";
+    import {PairField} from "../../utils/types";
 
     import {DeleteOutline} from "../../utils/icons";
 
     import InputText from "./InputText.vue";
     import Add from "../Add.vue";
 
+    import {useI18n} from "vue-i18n";
+    const {t} = useI18n({useScope: "global"});
+
     const emits = defineEmits(["update:modelValue"]);
     const props = defineProps({
         modelValue: {
-            type: Array as PropType<LabelField["value"]>,
+            type: Array as PropType<PairField["value"][]>,
             default: undefined,
         },
         label: {type: String, required: true},
+        property: {type: String, required: true},
         required: {type: Boolean, default: false},
     });
 
-    const addLabel = () => {
+    const addPair = () => {
         emits("update:modelValue", {...props.modelValue, "": ""});
     };
-    const removeLabel = (key: any) => {
+    const removePair = (key: any) => {
         const values = {...props.modelValue};
         delete values[key];
 

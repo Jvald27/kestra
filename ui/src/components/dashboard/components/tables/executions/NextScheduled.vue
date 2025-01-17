@@ -61,7 +61,7 @@
                         </RouterLink>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('namespace')">
+                <el-table-column :label="$t('namespace')" v-if="flow === null">
                     <template #default="scope">
                         <RouterLink
                             :to="{
@@ -82,7 +82,7 @@
                         </RouterLink>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('flow')">
+                <el-table-column :label="$t('flow')" v-if="flow === null">
                     <template #default="scope">
                         <RouterLink
                             :to="{
@@ -107,20 +107,7 @@
                 </el-table-column>
                 <el-table-column :label="$t('dashboard.next_execution_date')">
                     <template #default="scope">
-                        <el-tooltip
-                            v-if="!scope.row.disabled"
-                            :content="scope.row.triggerContext.flowId"
-                            placement="right"
-                        >
-                            <span class="text-truncate">
-                                {{
-                                    moment(
-                                        scope.row.triggerContext
-                                            .nextExecutionDate,
-                                    ).format("lll")
-                                }}
-                            </span>
-                        </el-tooltip>
+                        <date-ago v-if="!scope.row.disabled" :date="scope.row.triggerContext.nextExecutionDate" />
                         <span v-else>-</span>
                     </template>
                 </el-table-column>
@@ -147,9 +134,8 @@
     import {useStore} from "vuex";
     import {useI18n} from "vue-i18n";
 
-    import moment from "moment";
-
     import NoData from "../../../../layout/NoData.vue";
+    import DateAgo from "../../../../layout/DateAgo.vue";
 
     import Check from "vue-material-design-icons/Check.vue";
 

@@ -484,6 +484,12 @@ export default class YamlUtils {
         return parse && parse.tasks && parse.tasks[0].id;
     }
 
+    static getLastTask(source) {
+        let parse = YamlUtils.parse(source);
+
+        return parse && parse.tasks && parse.tasks[parse.tasks.length - 1].id;
+    }
+
     static checkTaskAlreadyExist(source, taskYaml) {
         const yamlDoc = yaml.parseDocument(source);
         const parsedTask = YamlUtils.parse(taskYaml);

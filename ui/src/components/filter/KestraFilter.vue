@@ -28,11 +28,8 @@
                 dashboards: dashboards.shown,
             }"
             @focus="handleFocus"
+            data-test-id="KestraFilter__select"
         >
-            <!--
-                TODO: Possible approach to solving https://github.com/kestra-io/kestra/issues/6238 might
-                be custom tag slot https://element-plus.org/en-US/component/select.html#custom-tag
-            -->
             <template #label="{value}">
                 <Label :option="value" />
             </template>
@@ -46,11 +43,12 @@
             </template>
             <template v-if="dropdowns.first.shown">
                 <el-option
-                    v-for="option in includedOptions"
+                    v-for="(option, index) in includedOptions"
                     :key="option.value"
                     :value="option.value"
                     :label="option.label"
                     @click="() => filterCallback(option)"
+                    :data-test-id="`KestraFilter__type__${index}`"
                 >
                     <component
                         v-if="option.icon"
@@ -62,7 +60,8 @@
             </template>
             <template v-else-if="dropdowns.second.shown">
                 <el-option
-                    v-for="comparator in dropdowns.first.value.comparators"
+                    v-for="(comparator, index) in dropdowns.first.value
+                        .comparators"
                     :key="comparator.value"
                     :value="comparator"
                     :label="comparator.label"
@@ -72,11 +71,12 @@
                         ),
                     }"
                     @click="() => comparatorCallback(comparator)"
+                    :data-test-id="`KestraFilter__comparator__${index}`"
                 />
             </template>
             <template v-else-if="dropdowns.third.shown">
                 <el-option
-                    v-for="filter in valueOptions"
+                    v-for="(filter, index) in valueOptions"
                     :key="filter.value"
                     :value="filter"
                     :label="filter.label"
@@ -90,6 +90,7 @@
                     @click="
                         () => !isOptionDisabled(filter) && valueCallback(filter)
                     "
+                    :data-test-id="`KestraFilter__value__${index}`"
                 />
             </template>
         </el-select>
@@ -576,26 +577,11 @@
         select.value?.focus();
     };
 
-    import {decodeParams} from "./utils/helpers";
+    import {encodeParams, decodeParams} from "./utils/helpers";
 
     const triggerSearch = () => {
-        const params: any = {};
-
-        current.value.forEach((filter) => {
-            if (
-                filter.label === "namespace" &&
-                filter.value &&
-                filter.value.length > 0
-            ) {
-                //Always send only the last value
-                params.namespace = filter.value[filter.value.length - 1];
-            } else if (filter.value && filter.value.length > 0) {
-                params[filter.label] =
-                    filter.value.length === 1 ? filter.value[0] : filter.value;
-            }
-        });
-
-        router.push({query: params});
+        if (props.searchCallback) return;
+        else router.push({query: encodeParams(current.value, OPTIONS)});
     };
 
     // Include parameters from URL directly to filter

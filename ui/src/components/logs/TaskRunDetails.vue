@@ -328,8 +328,6 @@
                 return Download
             },
             currentTaskRuns() {
-                // console.log(this.followedExecution?.taskRunList?.filter(tr => this.taskRunId ? tr.id === this.taskRunId : true))
-                // return this.logs.map(log => log.taskRunId).filter(tr => this.taskRunId ? tr.id === this.taskRunId : true)
                 return this.followedExecution?.taskRunList?.filter(tr => this.taskRunId ? tr.id === this.taskRunId : true) ?? [];
             },
             params() {
@@ -684,19 +682,6 @@
             border-radius: 0px;
         }
 
-        &.even > div > .el-card {
-            background: var(--bs-gray-100);
-
-            html.dark & {
-                background: var(--bs-gray-200);
-            }
-
-            .task-icon {
-                border: none;
-                color: $white;
-            }
-        }
-
         :deep(> .vue-recycle-scroller__item-wrapper > .vue-recycle-scroller__item-view > div) {
             padding-bottom: 1rem;
         }
@@ -706,18 +691,25 @@
         }
 
         .attempt-wrapper {
-            background-color: var(--ks-background-card);
-
-            :deep(.vue-recycle-scroller__item-view + .vue-recycle-scroller__item-view) {
-                border-top: 1px solid var(--ks-border-primary);
-            }
-
-            html.dark & {
-                background-color: var(--bs-gray-100);
-            }
+            background-color: var(--ks-background-input);
+            margin-bottom: 0;
+            border: 1px solid var(--ks-border-primary);
 
             .attempt-wrapper & {
                 border-radius: .25rem;
+            }
+            
+            tbody:last-child & {
+                border-bottom: 1px solid var(--ks-border-primary);
+            }
+
+            .attempt-header {
+                padding: .5rem;
+                border-bottom: 1px solid var(--ks-border-primary);
+            }
+
+            .line {
+                padding: .5rem;
             }
         }
 

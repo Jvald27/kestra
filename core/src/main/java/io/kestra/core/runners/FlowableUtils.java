@@ -240,6 +240,19 @@ public class FlowableUtils {
             parentTaskRun
         );
 
+        boolean isTasks = tasks.equals(allTasks);
+
+        // errors & finally must be run as sequential tasks
+        if (!isTasks) {
+            return resolveSequentialNexts(
+                execution,
+                tasks,
+                errors,
+                _finally,
+                parentTaskRun
+            );
+        }
+
         // all tasks run
         List<TaskRun> taskRuns = execution.findTaskRunByTasks(allTasks, parentTaskRun);
 
@@ -260,6 +273,7 @@ public class FlowableUtils {
             Map<String, List<ResolvedTask>> collect = allTasks
                 .stream()
                 .collect(Collectors.groupingBy(ResolvedTask::getValue, LinkedHashMap::new, Collectors.toList()));
+
             return collect.values().stream()
                 .limit(concurrencySlots)
                 .map(resolvedTasks -> resolvedTasks.getFirst().toNextTaskRun(execution))
