@@ -57,14 +57,14 @@ jobs:
 
       - name: Publish storybook to Google Cloud
         working-directory: ui
-        if: !github.event.pull_request.number
+        if: ${{ !github.event.pull_request.number }}
         run: |
           gsutil -m rsync -d -r storybook-static/storybook gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, github.ref_name) }}
 
       
       - name: Create commit comment
         uses: peter-evans/commit-comment@v3
-        if: !github.event.pull_request.number
+        if: ${{ !github.event.pull_request.number }}
         with:
           body: |
             Storybook published on ${{ github.event.repository.updated_at }}
