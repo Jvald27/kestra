@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
 import io.kestra.core.exceptions.InternalException;
+import io.kestra.core.models.QueryFilter;
 import io.kestra.core.models.HasSource;
 import io.kestra.core.models.SearchResult;
 import io.kestra.core.models.flows.Flow;
@@ -28,6 +29,7 @@ import io.kestra.core.services.GraphService;
 import io.kestra.core.services.PluginDefaultService;
 import io.kestra.core.tenant.TenantService;
 import io.kestra.core.topologies.FlowTopologyService;
+import io.kestra.core.converters.QueryFilterFormat;
 import io.kestra.webserver.controllers.domain.IdWithNamespace;
 import io.kestra.webserver.responses.BulkResponse;
 import io.kestra.webserver.responses.PagedResults;
@@ -47,8 +49,6 @@ import io.micronaut.validation.Validated;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.extensions.Extension;
-import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.inject.Inject;
@@ -57,15 +57,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import static io.kestra.core.utils.Rethrow.throwFunction;
 
@@ -101,6 +97,7 @@ public class FlowController {
 
     @Inject
     private TenantService tenantService;
+
 
     @ExecuteOn(TaskExecutors.IO)
     @Get(uri = "{namespace}/{id}/graph")
@@ -221,6 +218,20 @@ public class FlowController {
             namespace,
             RequestUtils.toMap(labels)
         ));
+    }
+
+
+    @ExecuteOn(TaskExecutors.IO)
+    @Get(uri = "/_search")
+    @Operation(tags = {"Flows"}, summary = "Search for flows")
+    public PagedResults<Flow> find(
+        @Parameter(description = "The current page") @QueryValue(defaultValue = "1") @Min(1) int page,
+        @Parameter(description = "The current page size") @QueryValue(defaultValue = "10") @Min(1) int size,
+        @Parameter(description = "The sort of current page") @Nullable @QueryValue List<String> sort,
+        @Parameter(description = "Filters") @QueryFilterFormat List<QueryFilter> filters
+    ) throws HttpStatusException {
+
+            return null;
     }
 
     @ExecuteOn(TaskExecutors.IO)
