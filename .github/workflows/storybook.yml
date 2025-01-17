@@ -80,7 +80,7 @@ jobs:
           conclusion: ${{ job.status }}
           output: |
             {
-              "summary":"Storybook published on ${{ github.event.repository.updated_at }}"
+              "summary":"Storybook published on ${{ github.event.repository.updated_at }}",
               "details_url":"https://internal.dev.kestra.io/${{ github.event.repository.name }}/${{ github.head_ref }}/storybook"
             }
 
