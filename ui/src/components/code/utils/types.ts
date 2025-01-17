@@ -17,16 +17,13 @@ export type Field = {
     disabled?: boolean;
 };
 
-export type LabelField = Omit<Field, "value"> & {
-    value: [string, string][];
+export type PairField = Omit<Field, "value"> & {
+    value: Record<string, string>;
+    property: string;
 };
 
 type InputField = Field & {
     inputs: any[];
-};
-
-type VariableField = Field & {
-    variables: any[];
 };
 
 type ConcurrencyField = Field & {
@@ -48,10 +45,10 @@ export type Fields = {
     namespace: Field;
     description: Field;
     retry: EditorField;
-    labels: LabelField;
+    labels: PairField;
     inputs: InputField;
     outputs: EditorField;
-    variables: VariableField;
+    variables: PairField;
     concurrency?: ConcurrencyField; // TODO: Make it not optional
     pluginDefaults: EditorField;
     disabled: Field;

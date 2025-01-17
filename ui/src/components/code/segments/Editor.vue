@@ -32,11 +32,10 @@
     import Collapse from "../components/collapse/Collapse.vue";
     import InputText from "../components/inputs/InputText.vue";
     import InputSwitch from "../components/inputs/InputSwitch.vue";
-    import InputLabel from "../components/inputs/InputLabel.vue";
+    import InputPair from "../components/inputs/InputPair.vue";
 
     import Editor from "../../inputs/Editor.vue";
     import MetadataInputs from "../../flows/MetadataInputs.vue";
-    import MetadataVariables from "../../flows/MetadataVariables.vue";
 
     import Task from "./Task.vue";
 
@@ -94,9 +93,10 @@
             style: {height: "100px"},
         },
         labels: {
-            component: shallowRef(InputLabel),
+            component: shallowRef(InputPair),
             value: props.metadata.labels,
             label: t("no_code.fields.general.labels"),
+            property: t("no_code.labels.label"),
         },
         inputs: {
             component: shallowRef(MetadataInputs),
@@ -114,10 +114,10 @@
             style: {height: "100px"},
         },
         variables: {
-            component: shallowRef(MetadataVariables),
+            component: shallowRef(InputPair),
             value: props.metadata.variables,
             label: t("no_code.fields.general.variables"),
-            variables: props.metadata.variables,
+            property: t("no_code.labels.variable"),
         },
         // concurrency: {
         //     component: shallowRef(InputSwitch), // TODO: To improve slot content

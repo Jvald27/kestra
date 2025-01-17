@@ -1064,7 +1064,9 @@
       "adding": "+ Add a {what}",
       "labels": {
         "yaml": "YAML Editor",
-        "no_code": "No Code Editor"
+        "no_code": "No Code Editor",
+        "label": "Label",
+        "variable": "Variable"
       },
       "sections": {
         "main": "Main properties",
