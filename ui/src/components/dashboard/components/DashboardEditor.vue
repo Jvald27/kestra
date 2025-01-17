@@ -147,11 +147,6 @@
 </template>
 <script setup>
     import PluginDocumentation from "../../plugins/PluginDocumentation.vue";
-    import Markdown from "../../layout/Markdown.vue";
-    import TimeSeries from "./charts/custom/TimeSeries.vue";
-    import Bar from "./charts/custom/Bar.vue";
-    import Pie from "./charts/custom/Pie.vue";
-    import Table from "./tables/custom/Table.vue";
     import ValidationErrors from "../../flows/ValidationError.vue"
     import BookOpenVariant from "vue-material-design-icons/BookOpenVariant.vue";
     import ChartBar from "vue-material-design-icons/ChartBar.vue";
@@ -167,6 +162,11 @@
     import yaml from "yaml";
     import ContentSave from "vue-material-design-icons/ContentSave.vue";
     import intro from "../../../assets/markdown/dashboard_home.md?raw";
+    import Markdown from "../../layout/Markdown.vue";
+    import TimeSeries from "./charts/custom/TimeSeries.vue";
+    import Bar from "./charts/custom/Bar.vue";
+    import Pie from "./charts/custom/Pie.vue";
+    import Table from "./tables/custom/Table.vue";
 
     export default {
         computed: {
@@ -212,7 +212,7 @@
                     if (type && this.plugins.includes(type)) {
                         this.$store.dispatch("plugin/load", {cls: type})
                             .then(plugin => {
-                                this.$store.commit("plugin/setEditorPlugin", plugin);
+                                this.$store.commit("plugin/setEditorPlugin", {cls: type, ...plugin});
                             });
                     } else {
                         this.$store.commit("plugin/setEditorPlugin", undefined);

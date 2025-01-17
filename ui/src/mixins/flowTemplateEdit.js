@@ -6,10 +6,10 @@ import Delete from "vue-material-design-icons/Delete.vue";
 import Editor from "../components/inputs/Editor.vue";
 import RouteContext from "./routeContext";
 import YamlUtils from "../utils/yamlUtils";
+import yamlUtils from "../utils/yamlUtils";
 import action from "../models/action";
 import permission from "../models/permission";
 import {pageFromRoute} from "../utils/eventsRouter";
-import yamlUtils from "../utils/yamlUtils";
 import {apiUrl} from "override/utils/route";
 
 export default {
@@ -266,7 +266,7 @@ export default {
             if (taskType && this.pluginSingleList.includes(taskType)) {
                 this.$store.dispatch("plugin/load", {cls: taskType})
                     .then(plugin => {
-                        this.$store.commit("plugin/setEditorPlugin", plugin);
+                        this.$store.commit("plugin/setEditorPlugin", {cls: taskType, ...plugin});
                     });
             } else {
                 this.$store.commit("plugin/setEditorPlugin", undefined);

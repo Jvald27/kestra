@@ -210,7 +210,7 @@ export default class Utils {
         // class name
         let htmlClass = document.getElementsByTagName("html")[0].classList;
 
-        function removeClasses() 
+        function removeClasses()
         {
             htmlClass.forEach((cls) => {
             if (cls === "dark" || cls === "light" || cls === "syncWithSystem") {
@@ -238,7 +238,7 @@ export default class Utils {
         if(theme === "syncWithSystem") {
             theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
-        
+
         return theme;
     }
 
@@ -274,10 +274,6 @@ export default class Utils {
         document.execCommand("copy");
 
         document.body.removeChild(node);
-    }
-
-    static distinctFilter(value, index, array) {
-        return array.indexOf(value) === index;
     }
 
     static toFormData(obj) {

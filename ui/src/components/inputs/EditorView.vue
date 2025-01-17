@@ -739,7 +739,7 @@
         const pluginSingleList = store.getters["plugin/getPluginSingleList"];
         if (taskType && pluginSingleList && pluginSingleList.includes(taskType)) {
             store.dispatch("plugin/load", {cls: taskType}).then((plugin) => {
-                store.commit("plugin/setEditorPlugin", plugin);
+                store.commit("plugin/setEditorPlugin", {cls: taskType, ...plugin});
             });
         } else {
             store.commit("plugin/setEditorPlugin", undefined);
