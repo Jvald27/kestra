@@ -1081,7 +1081,9 @@
       },
       "labels": {
         "no_code": "कोड संपादक नहीं",
-        "yaml": "YAML संपादक"
+        "yaml": "YAML संपादक",
+        "variable": "वेरिएबल",
+        "label": "लेबल"
       },
       "adding": "+ एक {what} जोड़ें"
     },

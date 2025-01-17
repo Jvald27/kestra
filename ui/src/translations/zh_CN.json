@@ -1081,7 +1081,9 @@
       },
       "labels": {
         "no_code": "无代码编辑器",
-        "yaml": "YAML编辑器"
+        "yaml": "YAML编辑器",
+        "variable": "变量",
+        "label": "标签"
       },
       "adding": "+ 添加{what}"
     },

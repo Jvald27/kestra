@@ -1081,7 +1081,9 @@
       },
       "labels": {
         "no_code": "코드 없는 편집기",
-        "yaml": "YAML 편집기"
+        "yaml": "YAML 편집기",
+        "variable": "변수",
+        "label": "레이블"
       },
       "adding": "+ {what} 추가"
     },
