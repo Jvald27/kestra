@@ -41,8 +41,9 @@ jobs:
 
       - name: Publish storybook to Google Cloud
         working-directory: ui
+        if: github.event.pull_request.number
         run: |
-          gsutil -m rsync -d -r storybook-static/storybook gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, github.ref_name) }}
+          gsutil -m rsync -d -r storybook-static/storybook gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, github.head_ref) }}
 
       # Comment or update comment on the PR
       - name: Create a comment on the Pull Request
@@ -51,5 +52,22 @@ jobs:
         with:
           message: |
             Storybook published on ${{ github.event.repository.updated_at }}
-            https://internal.dev.kestra.io/${{ github.event.repository.name }}/${{ github.ref_name }}/storybook
+            https://internal.dev.kestra.io/${{ github.event.repository.name }}/${{ github.head_ref }}/storybook
           comment-tag: 'storybook'
+
+      - name: Publish storybook to Google Cloud
+        working-directory: ui
+        if: !github.event.pull_request.number
+        run: |
+          gsutil -m rsync -d -r storybook-static/storybook gs://internal-kestra-host/${{ format('{0}/{1}', github.repository, github.ref_name) }}
+
+      
+      - name: Create commit comment
+        uses: peter-evans/commit-comment@v3
+        if: !github.event.pull_request.number
+        with:
+          body: |
+            Storybook published on ${{ github.event.repository.updated_at }}
+            https://internal.dev.kestra.io/ui-libs/${{ github.ref_name }}/storybook
+          reactions: 'hooray'
+  
