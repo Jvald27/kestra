@@ -68,6 +68,6 @@ jobs:
         with:
           body: |
             Storybook published on ${{ github.event.repository.updated_at }}
-            https://internal.dev.kestra.io/ui-libs/${{ github.ref_name }}/storybook
+            https://internal.dev.kestra.io/${{ github.event.repository.name }}/${{ github.ref_name }}/storybook
           reactions: 'hooray'
   
