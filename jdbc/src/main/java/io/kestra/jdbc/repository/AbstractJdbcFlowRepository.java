@@ -481,13 +481,92 @@ public abstract class AbstractJdbcFlowRepository extends AbstractJdbcRepository 
 
     abstract protected Condition findCondition(String query, Map<String, String> labels);
 
-    public ArrayListTotal<Flow> find(
-        Pageable pageable,
-        @Nullable String tenantId,
-        @Nullable List<QueryFilter> filters
-    ){
-        return null;
+    @Override
+    public ArrayListTotal<Flow> find(Pageable pageable, @Nullable String tenantId, @Nullable List<QueryFilter> filters) {
+
+        return this.jdbcRepository
+            .getDslContextWrapper()
+            .transactionResult(configuration -> {
+                DSLContext context = DSL.using(configuration);
+
+                SelectConditionStep<Record1<Object>> select = this.fullTextSelect(tenantId, context, Collections.emptyList());
+                Condition condition = this.buildCondition(filters);
+                if (condition != null) {
+                  select =  select.and(condition);
+                }
+
+                return this.jdbcRepository.fetchPage(context, select, pageable);
+            });
     }
+    private Condition buildCondition(@Nullable List<QueryFilter> filters) {
+        if (filters == null || filters.isEmpty()) {
+            return DSL.trueCondition();
+        }
+
+        List<Condition> conditions = new ArrayList<>();
+
+        for (QueryFilter filter : filters) {
+            String field = filter.field();
+            QueryFilter.Op operation = filter.operation();
+            Object value = filter.value();
+
+            switch (operation) {
+                case EQUALS:
+                    conditions.add(DSL.field(field).eq(value));
+                    break;
+
+                case NOT_EQUALS:
+                    conditions.add(DSL.field(field).ne(value));
+                    break;
+
+                case GREATER_THAN:
+                    conditions.add(DSL.field(field).gt(value));
+                    break;
+
+                case LESS_THAN:
+                    conditions.add(DSL.field(field).lt(value));
+                    break;
+
+                case IN:
+                    if (value instanceof List) {
+                        @SuppressWarnings("unchecked")
+                        List<String> values = (List<String>) value;
+                        conditions.add(DSL.field(field).in(values));
+                    }
+                    break;
+
+                case NOT_IN:
+                    if (value instanceof List) {
+                        @SuppressWarnings("unchecked")
+                        List<String> values = (List<String>) value;
+                        conditions.add(DSL.field(field).notIn(values));
+                    }
+                    break;
+
+                case STARTS_WITH:
+                    conditions.add(DSL.field(field).like(value + "%"));
+                    break;
+
+                case ENDS_WITH:
+                    conditions.add(DSL.field(field).like("%" + value));
+                    break;
+
+                case CONTAINS:
+                    conditions.add(DSL.field(field).like("%" + value + "%"));
+                    break;
+
+                case REGEX:
+                    conditions.add(DSL.condition("{0} ~ {1}", DSL.field(field), DSL.val(value)));
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unsupported operation: " + operation);
+            }
+        }
+
+        return conditions.isEmpty() ? DSL.trueCondition() : DSL.and(conditions);
+    }
+
     public ArrayListTotal<Flow> find(
         Pageable pageable,
         @Nullable String query,
