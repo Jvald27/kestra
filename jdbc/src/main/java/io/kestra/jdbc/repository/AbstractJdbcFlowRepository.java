@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.kestra.core.events.CrudEvent;
 import io.kestra.core.events.CrudEventType;
 import io.kestra.core.exceptions.DeserializationException;
+import io.kestra.core.models.QueryFilter;
 import io.kestra.core.models.SearchResult;
 import io.kestra.core.models.flows.*;
 import io.kestra.core.models.triggers.Trigger;
@@ -480,6 +481,13 @@ public abstract class AbstractJdbcFlowRepository extends AbstractJdbcRepository 
 
     abstract protected Condition findCondition(String query, Map<String, String> labels);
 
+    public ArrayListTotal<Flow> find(
+        Pageable pageable,
+        @Nullable String tenantId,
+        @Nullable List<QueryFilter> filters
+    ){
+        return null;
+    }
     public ArrayListTotal<Flow> find(
         Pageable pageable,
         @Nullable String query,

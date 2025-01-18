@@ -24,8 +24,8 @@ public record QueryFilter(
         NOT_IN("$notIn"),
         STARTS_WITH("$startsWith"),
         ENDS_WITH("$endsWith"),
-        CONTAINS("$contains");
-
+        CONTAINS("$contains"),
+        REGEX("$regex");
         private final String value;
 
         Op(String value) {

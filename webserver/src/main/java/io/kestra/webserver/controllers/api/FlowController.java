@@ -231,7 +231,11 @@ public class FlowController {
         @Parameter(description = "Filters") @QueryFilterFormat List<QueryFilter> filters
     ) throws HttpStatusException {
 
-            return null;
+        return PagedResults.of(flowRepository.find(
+            PageableUtils.from(page, size, sort),
+            tenantService.resolveTenant(),
+            filters
+        ));
     }
 
     @ExecuteOn(TaskExecutors.IO)
