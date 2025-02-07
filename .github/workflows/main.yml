@@ -283,7 +283,7 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.gcp-service-account.json
           ./gradlew check javadoc --parallel
 
-      # report test
+      # Test results
       - name: Test - Publish Test Results
         uses: dorny/test-reporter@v1
         if: always()
@@ -352,6 +352,7 @@ jobs:
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: backend
 
       - name: Codecov - Upload test results
         uses: codecov/test-results-action@v1
@@ -359,6 +360,7 @@ jobs:
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: backend
 
   release:
     name: Github Release
