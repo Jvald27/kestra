@@ -8,10 +8,20 @@
             :xl="multipleSelected || selectedValue ? 18 : 24"
             class="d-flex flex-column"
         >
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Search tasks..."
+                    class="search-bar"
+                >
+            </div>
+
             <el-cascader-panel
                 ref="cascader"
                 v-model="selected"
-                :options="outputs"
+                :options="filteredOutputs"
                 :border="false"
                 class="flex-grow-1 overflow-x-auto cascader"
                 @expand-change="() => scrollRight()"
@@ -401,6 +411,35 @@
 
         return tasks;
     });
+    // Search input state
+    const searchQuery = ref("");
+
+    // Computed filtered outputs based on search query
+    const filteredOutputs = computed(() => {
+        if (!searchQuery.value) return outputs.value; // Show all tasks if no search input
+
+        const filterTasks = (items) => {
+            return items
+                .map((item) => {
+                    // Recursively filter children
+                    if (item.children) {
+                        const children = filterTasks(item.children);
+                        if (children.length) {
+                            return {...item, children};
+                        }
+                    }
+
+                    // Match task label with search query
+                    if (item.label.toLowerCase().includes(searchQuery.value.toLowerCase())) {
+                        return item;
+                    }
+                })
+                .filter(Boolean); // Remove undefined values
+        };
+
+        return filterTasks(outputs.value);
+    });
+
 
     const allIcons = computed(() => store.state.plugin.icons);
     const icons = computed(() => {
