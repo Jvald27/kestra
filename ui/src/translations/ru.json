@@ -268,7 +268,10 @@
       },
       "empty": "Нет blueprints для отображения.",
       "custom": "Пользовательские blueprints",
-      "community": "Сообщество"
+      "community": "Сообщество",
+      "dashboards": "Панель управления Blueprints",
+      "flows": "Черновики Flow",
+      "apps": "Черновики приложений"
     },
     "use": "Использовать",
     "plugins": {
@@ -681,7 +684,6 @@
         "theme": {
           "label": "Настройки темы",
           "fields": {
-            "mode": "Режим темы",
             "editor_font_size": "Размер шрифта редактора",
             "editor_font_family": "Шрифт редактора",
             "editor_folding_stratgy": "Автоматическое сворачивание кода в редакторе",
@@ -692,7 +694,8 @@
               "classic": "Классический",
               "kestra": "Kestra"
             },
-            "logs_font_size": "Размер шрифта Logs"
+            "logs_font_size": "Размер шрифта Logs",
+            "theme": "Тема"
           }
         },
         "localization": {
@@ -1017,7 +1020,7 @@
         "in": "в",
         "starts_with": "начинается с",
         "not_contains": "не содержит",
-        "is_not_one_off": "не является одним из",
+        "not_in": "не является одним из",
         "is_one_of": "является одним из",
         "between": "между",
         "greater_than": "больше чем",
@@ -1160,7 +1163,8 @@
       "fold_unfold": "Свернуть/Развернуть код",
       "comment": "Комментарий",
       "move_line": "Переместить строку",
-      "command_palette": "Показать палитру команд"
+      "command_palette": "Показать палитру команд",
+      "trigger_autocompletion": "Запустить автозаполнение"
     },
     "something_went_wrong": {
       "loading_execution": "Произошла ошибка при загрузке выполнения"
@@ -1170,6 +1174,11 @@
       "hint": "Выберите видимые столбцы",
       "hidden": "Скрыто в таблице",
       "label": "Свойства"
-    }
+    },
+    "debug": "Отладка",
+    "default": "По умолчанию",
+    "custom_dashboard_confirm_deletion": "Вы уверены, что хотите удалить панель <code>{title}</code>?",
+    "custom_dashboard_validate_editing": "Изменения в панели <code>{title}</code> сохранены.",
+    "custom_dashboard_validate_creation": "Панель управления <code>{title}</code> создана."
   }
 }

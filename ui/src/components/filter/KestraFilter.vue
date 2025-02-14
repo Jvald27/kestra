@@ -37,7 +37,7 @@
                     TODO: Find a way to have persistent tags for el-select.
                     https://github.com/kestra-io/kestra/issues/6256
                 -->
-                <Label :option="value" />
+                <Label :option="value" :prefix="ITEMS_PREFIX" />
             </template>
             <template #empty>
                 <span v-if="!isDatePickerShown">{{ emptyLabel }}</span>
@@ -405,7 +405,7 @@
             );
             if (parentIndex !== -1) {
                 if (
-                    ["namespace", "log level"].includes(
+                    ["log level"].includes(
                         lastClickedParent.value.toLowerCase(),
                     )
                 ) {
@@ -438,9 +438,19 @@
                     },
                 ];
             }
+            const index = currentFilters.value.findIndex((v) => v.label === "absolute_date");
+
+            if (index !== -1) {
+                if (!filter || !filter.startDate || !filter.endDate) {
+                    // Remove absolute_date if it's empty
+                    currentFilters.value.splice(index, 1);
+                }
+            }
         }
 
         if (
+            dropdowns.value.third.index !== -1 &&
+            currentFilters.value[dropdowns.value.third.index] &&
             !currentFilters.value[dropdowns.value.third.index].comparator?.multiple
         ) {
             // If selection is not multiple, close the dropdown
@@ -581,6 +591,16 @@
     };
     const currentFilters = ref<CurrentItem[]>([]);
 
+    watch(
+        () => route.query,
+        (q: any) => {
+            // Handling change of label filters from direct click events
+            const routeFilters = decodeParams(route.path, q, props.include, OPTIONS);
+            currentFilters.value = routeFilters;
+        },
+        {immediate: true},
+    );
+
     const prefixFilter = ref("");
 
     const includedOptions = computed(() => {
@@ -697,7 +717,7 @@
                 persistent: true,
             });
         };
-        const {name, params} = route;
+        const {name, params, query} = route;
 
         if (name === "flows/update") {
             // Single flow page
@@ -714,6 +734,24 @@
         } else if (name === "namespaces/update") {
             // Single namespace page
             addNamespaceFilter(params.id);
+        } else if (name === "admin/triggers") {
+            if(query.namespace) addNamespaceFilter(query.namespace);
+            if(query.flowId){
+                currentFilters.value.push({
+                    label: "flow",
+                    value: [`${query.flowId}`],
+                    comparator: COMPARATORS.EQUALS,
+                    persistent: true,
+                });
+            }
+            if(query.q) {
+                currentFilters.value.push({
+                    label: "text",
+                    value: [`${query.q}`],
+                    comparator: COMPARATORS.EQUALS,
+                    persistent: true,
+                });
+            }            
         }
     });
 
@@ -933,11 +971,22 @@ $properties: v-bind('props.propertiesWidth + "px"');
             0 1px 0 0 $filters-border-color inset;
 
         & .el-tag {
-            background: $filters-border-color !important;
-            color: $filters-gray-900;
+            overflow: hidden;
+            padding: 0 !important;
+            padding-right: 0.30rem !important;
+            color: var(--ks-tag-content);
+            background: var(--ks-tag-background-active) !important;
+
+            &:hover {
+                background: var(--ks-tag-background-hover) !important;
+            }
 
             & .el-tag__close {
-                color: $filters-gray-900;
+                color: var(--ks-content-link);
+
+                &:hover{
+                    background: none !important;
+                }
             }
         }
     }
@@ -955,7 +1004,6 @@ $properties: v-bind('props.propertiesWidth + "px"');
 .filters-select {
     & .el-select-dropdown {
         width: auto !important;
-        max-width: 300px;
 
         &:has(.el-select-dropdown__empty) {
             width: auto !important;

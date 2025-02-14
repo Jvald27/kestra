@@ -268,7 +268,10 @@
       },
       "empty": "No hay blueprints para mostrar.",
       "custom": "Planos personalizados",
-      "community": "Comunidad"
+      "community": "Comunidad",
+      "dashboards": "Planos del Dashboard",
+      "flows": "Planos de Flow",
+      "apps": "Planos de la Aplicación"
     },
     "use": "Usar",
     "plugins": {
@@ -681,7 +684,6 @@
         "theme": {
           "label": "Preferencias de Tema",
           "fields": {
-            "mode": "Modo de Tema",
             "editor_font_size": "Tamaño de Fuente del Editor",
             "editor_font_family": "Familia de Fuente del Editor",
             "editor_folding_stratgy": "Plegado Automático de Código en el Editor",
@@ -692,7 +694,8 @@
               "classic": "Clásico",
               "kestra": "Kestra"
             },
-            "logs_font_size": "Tamaño de Fuente de Logs"
+            "logs_font_size": "Tamaño de Fuente de Logs",
+            "theme": "Tema"
           }
         },
         "localization": {
@@ -1017,7 +1020,7 @@
         "in": "en",
         "starts_with": "comienza con",
         "not_contains": "no contiene",
-        "is_not_one_off": "no es uno de",
+        "not_in": "no en",
         "is_one_of": "es uno de",
         "between": "entre",
         "greater_than": "mayor que",
@@ -1160,7 +1163,8 @@
       "fold_unfold": "Plegar/Desplegar código",
       "comment": "Comentario",
       "move_line": "Mover línea",
-      "command_palette": "Mostrar paleta de comandos"
+      "command_palette": "Mostrar paleta de comandos",
+      "trigger_autocompletion": "Activar autocompletado"
     },
     "something_went_wrong": {
       "loading_execution": "Algo salió mal al cargar la ejecución."
@@ -1170,6 +1174,11 @@
       "hint": "Elegir Columnas Visibles",
       "hidden": "Oculto en la Tabla",
       "label": "Propiedades"
-    }
+    },
+    "debug": "Depuración",
+    "default": "Predeterminado",
+    "custom_dashboard_confirm_deletion": "¿Está seguro de que desea eliminar el dashboard <code>{title}</code>?",
+    "custom_dashboard_validate_editing": "Los cambios en el dashboard <code>{title}</code> se han guardado.",
+    "custom_dashboard_validate_creation": "El Dashboard <code>{title}</code> ha sido creado."
   }
 }

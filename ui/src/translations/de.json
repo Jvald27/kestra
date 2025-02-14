@@ -268,7 +268,10 @@
       },
       "empty": "Keine Blueprints zum Anzeigen.",
       "custom": "Benutzerdefinierte Blueprints",
-      "community": "Gemeinschaft"
+      "community": "Gemeinschaft",
+      "dashboards": "Dashboard Blueprints",
+      "flows": "Flow-Blueprints",
+      "apps": "App-Blueprints"
     },
     "use": "Verwenden",
     "plugins": {
@@ -681,7 +684,6 @@
         "theme": {
           "label": "Modus-Einstellungen",
           "fields": {
-            "mode": "Modus",
             "editor_font_size": "Editor-Schriftgröße",
             "editor_font_family": "Editor-Schriftfamilie",
             "editor_folding_stratgy": "Automatisch Code im Editor zusammenklappen",
@@ -692,7 +694,8 @@
               "classic": "Klassisch",
               "kestra": "Kestra"
             },
-            "logs_font_size": "Logs Schriftgröße"
+            "logs_font_size": "Logs Schriftgröße",
+            "theme": "Modus"
           }
         },
         "localization": {
@@ -1017,7 +1020,7 @@
         "in": "im",
         "starts_with": "beginnt mit",
         "not_contains": "nicht enthält",
-        "is_not_one_off": "ist nicht einer von",
+        "not_in": "nicht in",
         "is_one_of": "ist eine von",
         "between": "zwischen",
         "greater_than": "größer als",
@@ -1160,7 +1163,8 @@
       "fold_unfold": "Code ein-/ausklappen",
       "comment": "Kommentar",
       "move_line": "Zeile verschieben",
-      "command_palette": "Befehlsübersicht anzeigen"
+      "command_palette": "Befehlsübersicht anzeigen",
+      "trigger_autocompletion": "Autovervollständigung auslösen"
     },
     "something_went_wrong": {
       "loading_execution": "Beim Laden der Ausführung ist etwas schiefgelaufen."
@@ -1170,6 +1174,11 @@
       "hint": "Sichtbare Spalten auswählen",
       "hidden": "In Tabelle versteckt",
       "label": "Eigenschaften"
-    }
+    },
+    "debug": "Debuggen",
+    "default": "Standard",
+    "custom_dashboard_confirm_deletion": "Möchten Sie das Dashboard <code>{title}</code> wirklich löschen?",
+    "custom_dashboard_validate_editing": "Änderungen im Dashboard <code>{title}</code> sind gespeichert.",
+    "custom_dashboard_validate_creation": "Dashboard <code>{title}</code> wurde erstellt."
   }
 }

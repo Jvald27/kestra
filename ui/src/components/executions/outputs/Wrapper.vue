@@ -1,12 +1,8 @@
 <template>
-    <el-row class="flex-grow-1 outputs">
-        <el-col
-            :xs="24"
-            :sm="24"
-            :md="multipleSelected || selectedValue ? 16 : 24"
-            :lg="multipleSelected || selectedValue ? 16 : 24"
-            :xl="multipleSelected || selectedValue ? 18 : 24"
-            class="d-flex flex-column"
+    <div class="outputs">
+        <div
+            class="d-flex flex-column left"
+            :style="{width: leftWidth + '%'}"
         >
             <!-- Search Bar -->
             <div class="search-container">
@@ -64,18 +60,13 @@
                     </div>
                 </template>
             </el-cascader-panel>
-        </el-col>
-        <el-col
-            v-if="multipleSelected || selectedValue"
-            :xs="24"
-            :sm="24"
-            :md="8"
-            :lg="8"
-            :xl="6"
-            class="d-flex wrapper"
-        >
-            <div @mousedown.prevent.stop="dragSidebar" class="slider" />
-            <div class="w-100 overflow-auto p-3">
+        </div>
+        <div class="slider" @mousedown="startDragging" />
+        <div class="right wrapper" :style="{width: 100 - leftWidth + '%'}">
+            <div
+                v-if="multipleSelected || selectedValue"
+                class="w-100 overflow-auto p-3"
+            >
                 <div class="d-flex justify-content-between pe-none fs-5 values">
                     <code class="d-block">
                         {{ selectedNode()?.label ?? "Value" }}
@@ -140,14 +131,9 @@
                     </p>
                     <div class="my-2">
                         <CopyToClipboard
-                            :text="debugError"
+                            :text="`${debugError}\n\n${debugStackTrace}`"
                             label="Copy Error"
                             class="d-inline-block me-2"
-                        />
-                        <CopyToClipboard
-                            :text="debugStackTrace"
-                            label="Copy Stack Trace"
-                            class="d-inline-block"
                         />
                     </div>
                     <pre class="mb-0" style="overflow: scroll">{{
@@ -165,8 +151,8 @@
                     :execution-id="selectedNode().value"
                 />
             </div>
-        </el-col>
-    </el-row>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -201,7 +187,7 @@
             const rest = path.substring(bracketIndex);
 
             return `["${task}"]${rest}`;
-        }
+        };
 
         let task = selectedTask()?.taskId;
         if (!task) return "";
@@ -211,9 +197,6 @@
 
         return `{{ outputs${formatPath(path)} }}`;
     });
-
-    // TODO: To be implemented properly
-    const dragSidebar = () => {};
 
     const debugError = ref("");
     const debugStackTrace = ref("");
@@ -471,10 +454,45 @@
     const displayVarValue = () =>
         isFile(selectedValue.value) ||
         selectedValue.value !== debugExpression.value;
+
+    const leftWidth = ref(70);
+    const startDragging = (event: MouseEvent) => {
+        const startX = event.clientX;
+        const startWidth = leftWidth.value;
+
+        const onMouseMove = (moveEvent: MouseEvent) => {
+            const delta = ((moveEvent.clientX - startX) / window.innerWidth) * 100;
+            leftWidth.value = Math.max(30, Math.min(70, startWidth + delta));
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+        };
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+    };
 </script>
 
 <style lang="scss">
+.slider {
+    width: 3px;
+    cursor: ew-resize;
+    position: relative;
+    background-color: var(--ks-border-primary);
+    user-select: none;
+
+    &:hover {
+        background-color: var(--ks-border-active);
+    }
+}
+
 .outputs {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+
     .el-scrollbar.el-cascader-menu:nth-of-type(-n + 2) ul li:first-child,
     .values {
         pointer-events: none;
@@ -558,20 +576,6 @@
                 color: var(--ks-content-primary);
             }
         }
-    }
-}
-
-.slider {
-    flex: 0 0 3px;
-    border-radius: 0.15rem;
-    margin: 0 4px;
-    background-color: var(--ks-border-primary);
-    border: none;
-    cursor: col-resize;
-    user-select: none; /* disable selection */
-
-    &:hover {
-        background-color: var(--ks-border-active);
     }
 }
 </style>

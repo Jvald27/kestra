@@ -268,7 +268,10 @@
       },
       "empty": "設計図が表示されていません。",
       "custom": "カスタムblueprint",
-      "community": "コミュニティ"
+      "community": "コミュニティ",
+      "dashboards": "ダッシュボード Blueprints",
+      "flows": "フローBlueprints",
+      "apps": "アプリケーション Blueprints"
     },
     "use": "使用",
     "plugins": {
@@ -681,7 +684,6 @@
         "theme": {
           "label": "テーマ設定",
           "fields": {
-            "mode": "テーマモード",
             "editor_font_size": "エディタフォントサイズ",
             "editor_font_family": "エディタフォントファミリー",
             "editor_folding_stratgy": "エディタでの自動コード折りたたみ",
@@ -692,7 +694,8 @@
               "classic": "クラシック",
               "kestra": "Kestra"
             },
-            "logs_font_size": "ログフォントサイズ"
+            "logs_font_size": "ログフォントサイズ",
+            "theme": "テーマ"
           }
         },
         "localization": {
@@ -1017,7 +1020,7 @@
         "in": "内",
         "starts_with": "で始まる",
         "not_contains": "含まれていない",
-        "is_not_one_off": "のいずれでもありません",
+        "not_in": "にない",
         "is_one_of": "のいずれか",
         "between": "間",
         "greater_than": "より大きい",
@@ -1160,7 +1163,8 @@
       "fold_unfold": "コードを折りたたむ/展開する",
       "comment": "コメント",
       "move_line": "行を移動",
-      "command_palette": "コマンドパレットを表示"
+      "command_palette": "コマンドパレットを表示",
+      "trigger_autocompletion": "オートコンプリートをトリガー"
     },
     "something_went_wrong": {
       "loading_execution": "実行の読み込み中に問題が発生しました。"
@@ -1170,6 +1174,11 @@
       "hint": "表示する列を選択",
       "hidden": "テーブルに隠す",
       "label": "プロパティ"
-    }
+    },
+    "debug": "デバッグ",
+    "default": "デフォルト",
+    "custom_dashboard_confirm_deletion": "<code>{title}</code> ダッシュボードを削除してもよろしいですか？",
+    "custom_dashboard_validate_editing": "ダッシュボード<code>{title}</code>の変更が保存されました。",
+    "custom_dashboard_validate_creation": "ダッシュボード <code>{title}</code> が作成されました。"
   }
 }

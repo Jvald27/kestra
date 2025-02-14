@@ -268,7 +268,10 @@
       },
       "empty": "Aucun blueprint à afficher.",
       "custom": "Plans personnalisés",
-      "community": "Communauté"
+      "community": "Communauté",
+      "dashboards": "Tableaux de bord Blueprints",
+      "flows": "Plans de Flow",
+      "apps": "Plans d'application"
     },
     "use": "Utiliser",
     "plugins": {
@@ -681,7 +684,6 @@
         "theme": {
           "label": "Préférences de thème",
           "fields": {
-            "mode": "Mode thème",
             "editor_font_size": "Taille de Police de l'éditeur",
             "editor_font_family": "Police de caractères de l'éditeur",
             "editor_folding_stratgy": "Stratégie de Pliage Automatique ou Multi-Lignes de l'Éditeur",
@@ -692,7 +694,8 @@
               "classic": "Classique",
               "kestra": "Kestra"
             },
-            "logs_font_size": "Taille de police des Logs"
+            "logs_font_size": "Taille de police des Logs",
+            "theme": "Modèle"
           }
         },
         "localization": {
@@ -1017,7 +1020,7 @@
         "in": "dans",
         "starts_with": "commence par",
         "not_contains": "ne contient pas",
-        "is_not_one_off": "n'est pas l'un de",
+        "not_in": "n'est pas dans",
         "is_one_of": "est l'un de",
         "between": "entre",
         "greater_than": "plus grand que",
@@ -1160,7 +1163,8 @@
       "fold_unfold": "Plier/Déplier le code",
       "comment": "Commentaire",
       "move_line": "Déplacer la ligne",
-      "command_palette": "Afficher la palette de commandes"
+      "command_palette": "Afficher la palette de commandes",
+      "trigger_autocompletion": "Déclencher l'autocomplétion"
     },
     "something_went_wrong": {
       "loading_execution": "Une erreur s'est produite lors du chargement de l'exécution"
@@ -1170,6 +1174,11 @@
       "hint": "Choisir les colonnes visibles",
       "hidden": "Caché dans le tableau",
       "label": "Propriétés"
-    }
+    },
+    "debug": "Déboguer",
+    "default": "Par défaut",
+    "custom_dashboard_confirm_deletion": "Êtes-vous sûr de vouloir supprimer le tableau de bord <code>{title}</code> ?",
+    "custom_dashboard_validate_editing": "Les modifications dans le tableau de bord <code>{title}</code> sont enregistrées.",
+    "custom_dashboard_validate_creation": "Tableau de bord <code>{title}</code> est créé."
   }
 }

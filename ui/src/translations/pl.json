@@ -268,7 +268,10 @@
       },
       "empty": "Brak blueprintów do wyświetlenia.",
       "custom": "Niestandardowe blueprints",
-      "community": "Społeczność"
+      "community": "Społeczność",
+      "dashboards": "Dashboard Blueprinty",
+      "flows": "Schematy Flow",
+      "apps": "Szablony aplikacji"
     },
     "use": "Użyj",
     "plugins": {
@@ -681,7 +684,6 @@
         "theme": {
           "label": "Preferencje Motywu",
           "fields": {
-            "mode": "Tryb Motywu",
             "editor_font_size": "Rozmiar Czcionki Edytora",
             "editor_font_family": "Rodzina Czcionki Edytora",
             "editor_folding_stratgy": "Automatyczne Zwijanie Kodu w Edytorze",
@@ -692,7 +694,8 @@
               "classic": "Klasyczny",
               "kestra": "Kestra"
             },
-            "logs_font_size": "Rozmiar czcionki logów"
+            "logs_font_size": "Rozmiar czcionki logów",
+            "theme": "Motyw"
           }
         },
         "localization": {
@@ -1017,7 +1020,7 @@
         "in": "w",
         "starts_with": "zaczyna się od",
         "not_contains": "nie zawiera",
-        "is_not_one_off": "nie jest jednym z",
+        "not_in": "nie w",
         "is_one_of": "jest jednym z",
         "between": "pomiędzy",
         "greater_than": "większe niż",
@@ -1160,7 +1163,8 @@
       "fold_unfold": "Zwiń/Rozwiń kod",
       "comment": "Komentarz",
       "move_line": "Przenieś linię",
-      "command_palette": "Pokaż paletę poleceń"
+      "command_palette": "Pokaż paletę poleceń",
+      "trigger_autocompletion": "Wyzwól autouzupełnianie"
     },
     "something_went_wrong": {
       "loading_execution": "Wystąpił problem podczas ładowania wykonania"
@@ -1170,6 +1174,11 @@
       "hint": "Wybierz widoczne kolumny",
       "hidden": "Ukryte w tabeli",
       "label": "Właściwości"
-    }
+    },
+    "debug": "Debugowanie",
+    "default": "Domyślny",
+    "custom_dashboard_confirm_deletion": "Czy na pewno chcesz usunąć dashboard <code>{title}</code>?",
+    "custom_dashboard_validate_editing": "Zmiany w dashboardzie <code>{title}</code> zostały zapisane.",
+    "custom_dashboard_validate_creation": "Dashboard <code>{title}</code> został utworzony."
   }
 }
