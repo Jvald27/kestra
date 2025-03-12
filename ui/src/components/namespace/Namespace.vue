@@ -12,7 +12,7 @@
                 <li>
                     <router-link :to="{name: 'flows/create', query: {namespace: $route.params.id}}" v-if="canCreateFlow">
                         <el-button :icon="Plus" type="primary">
-                            {{ $t('create') }}
+                            {{ $t('create_flow') }}
                         </el-button>
                     </router-link>
                 </li>
@@ -69,15 +69,23 @@
                 return this.user && this.user.hasAnyActionOnAnyNamespace(permission.FLOW, action.CREATE);
             },
             routeInfo() {
+                const parts = this.$route.params.id?.split(".") || [];
                 return {
-                    title: this.$route.params.id || this.$t("namespaces"),
+                    title: parts?.[parts.length - 1] || this.$t("namespaces"),
                     breadcrumb: [
                         {
                             label: this.$t("namespaces"),
                             link: {
                                 name: "namespaces"
                             }
-                        }
+                        },
+                        ...parts.map((part, index) => ({
+                            label: part,
+                            link: {
+                                name: "namespaces/update",
+                                params: {id: parts.slice(0, index + 1).join(".")},
+                            },
+                        })),
                     ]
                 };
             },
@@ -108,18 +116,14 @@
                         }
                     },
                     {
-                        name: "files",
-                        component: EditorView,
-                        title: this.$t("files"),
+                        name: "edit",
+                        component: DemoNamespace,
+                        title: this.$t("edit"),
+                        maximize: true,
                         props: {
-                            tab: "files",
-                            isNamespace: true,
-                            namespace: this.$route.params.id,
-                            isReadOnly: false,
+                            tab: "edit",
                         },
-                        query: {
-                            id: this.$route.query.id
-                        }
+                        locked: true
                     },
                     {
                         name: "flows",
@@ -157,25 +161,12 @@
                         }
                     },
                     {
-                        name: "kv",
-                        component: NamespaceKV,
-                        title: this.$t("kv.name"),
-                        props: {
-                            addKvModalVisible: this.modalAddKvVisible,
-                        },
-                        "v-on": {
-                            "update:addKvModalVisible": (value) => {
-                                this.modalAddKvVisible = value
-                            }
-                        }
-                    },
-                    {
-                        name: "edit",
+                        name: "secrets",
                         component: DemoNamespace,
-                        title: this.$t("edit"),
+                        title: this.$t("secret.names"),
                         maximize: true,
                         props: {
-                            tab: "edit",
+                            tab: "secrets",
                         },
                         locked: true
                     },
@@ -200,12 +191,39 @@
                         locked: true
                     },
                     {
-                        name: "secrets",
+                        name: "kv",
+                        component: NamespaceKV,
+                        title: this.$t("kv.name"),
+                        props: {
+                            addKvModalVisible: this.modalAddKvVisible,
+                        },
+                        "v-on": {
+                            "update:addKvModalVisible": (value) => {
+                                this.modalAddKvVisible = value
+                            }
+                        }
+                    },
+                    {
+                        name: "files",
+                        component: EditorView,
+                        title: this.$t("files"),
+                        props: {
+                            tab: "files",
+                            isNamespace: true,
+                            namespace: this.$route.params.id,
+                            isReadOnly: false,
+                        },
+                        query: {
+                            id: this.$route.query.id
+                        }
+                    },
+                    {
+                        name: "history",
                         component: DemoNamespace,
-                        title: this.$t("secret.names"),
+                        title: this.$t("revisions"),
                         maximize: true,
                         props: {
-                            tab: "secrets",
+                            tab: "history",
                         },
                         locked: true
                     },

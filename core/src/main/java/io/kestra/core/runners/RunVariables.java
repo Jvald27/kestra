@@ -209,6 +209,10 @@ public final class RunVariables {
 
                 executionMap.put("id", execution.getId());
 
+                if (execution.getState() != null) { // can occurs in tests
+                    executionMap.put("state", execution.getState().getCurrent());
+                }
+
                 Optional.ofNullable(execution.getState()).map(State::getStartDate)
                     .ifPresent(startDate -> executionMap.put("startDate", startDate));
 
@@ -233,6 +237,7 @@ public final class RunVariables {
                                 tasksMap.put(taskRun.getTaskId(), Map.of("state", taskRun.getState().getCurrent()));
                             } else {
                                 if (tasksMap.containsKey(taskRun.getTaskId())) {
+                                    @SuppressWarnings("unchecked")
                                     Map<String, Object> taskRunMap = new HashMap<>((Map<String, Object>) tasksMap.get(taskRun.getTaskId()));
                                     taskRunMap.put(taskRun.getValue(), Map.of("state", taskRun.getState().getCurrent()));
                                     tasksMap.put(taskRun.getTaskId(), taskRunMap);

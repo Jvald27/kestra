@@ -63,7 +63,7 @@ public abstract class AbstractJdbcExecutionRepository extends AbstractJdbcReposi
     protected final AbstractJdbcExecutorStateStorage executorStateStorage;
 
     private QueueInterface<Execution> executionQueue;
-    private NamespaceUtils namespaceUtils;
+    private final NamespaceUtils namespaceUtils;
 
     private final JdbcFilterService filterService;
 
@@ -1174,12 +1174,7 @@ public abstract class AbstractJdbcExecutionRepository extends AbstractJdbcReposi
                 SelectSeekStepN<Record> selectSeekStep = orderBy(selectHavingStep, descriptors);
 
                 // Fetch and paginate if provided
-                List<Map<String, Object>> results = fetchSeekStep(selectSeekStep, pageable);
-
-                // Fetch total count for pagination
-                int total = context.fetchCount(selectConditionStep);
-
-                return new ArrayListTotal<>(results, total);
+                return fetchSeekStep(selectSeekStep, pageable);
             });
     }
 
@@ -1203,6 +1198,7 @@ public abstract class AbstractJdbcExecutionRepository extends AbstractJdbcReposi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected <F extends Enum<F>> SelectConditionStep<Record> where(SelectConditionStep<Record> selectConditionStep, JdbcFilterService jdbcFilterService, DataFilter<F, ? extends ColumnDescriptor<F>> descriptors, Map<F, String> fieldsMapping) {
         if (!ListUtils.isEmpty(descriptors.getWhere())) {
             // Check if descriptors contain a filter of type Executions.Fields.STATE and apply the custom filter "statesFilter" if present

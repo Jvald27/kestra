@@ -166,9 +166,14 @@ public abstract class AbstractExecScript extends Task implements RunnableTask<Sc
             .withOutputFiles(runContext.render(this.getOutputFiles()).asList(String.class))
             .withEnableOutputDirectory(runContext.render(this.getOutputDirectory()).as(Boolean.class).orElse(null))
             .withTimeout(runContext.render(this.getTimeout()).as(Duration.class).orElse(null))
-            .withTargetOS(runContext.render(this.getTargetOS()).as(TargetOS.class).orElseThrow());
+            .withTargetOS(runContext.render(this.getTargetOS()).as(TargetOS.class).orElseThrow())
+            .withFailFast(runContext.render(this.getFailFast()).as(Boolean.class).orElse(false));
     }
 
+    /**
+     * Rendering of beforeCommands will be done in the CommandsWrapper to give access to the workingDir variable
+     */
+    @Deprecated(since = "0.22")
     protected List<String> getBeforeCommandsWithOptions(RunContext runContext) throws IllegalVariableEvaluationException {
         return mayAddExitOnErrorCommands(runContext.render(this.getBeforeCommands()).asList(String.class), runContext);
     }

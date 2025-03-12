@@ -157,11 +157,17 @@
                 explorerWidth: (state) => state.editor.explorerWidth,
             }),
             containerClass() {
+                const isEnterpriseTab = this.activeTab.locked;
+
                 if (this.activeTab.containerClass) {
-                    return {[this.activeTab.containerClass] : true};
+                    return {[this.activeTab.containerClass]: true};
                 }
 
-                return {"container" : true, "mt-4": true};
+                return {
+                    "container": !isEnterpriseTab,
+                    "mt-4": !isEnterpriseTab,
+                    "px-0": isEnterpriseTab
+                };
             },
             activeTab() {
                 return this.tabs
@@ -200,6 +206,11 @@
 </script>
 
 <style lang="scss" scoped>
+    section.container.mt-4:has(> section.empty) {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     :deep(.el-tabs) {
         .el-tabs__item.is-disabled {
             &:after {
