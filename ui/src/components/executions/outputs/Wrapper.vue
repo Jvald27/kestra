@@ -1,12 +1,8 @@
 <template>
-    <el-row class="flex-grow-1 outputs">
-        <el-col
-            :xs="24"
-            :sm="24"
-            :md="multipleSelected || selectedValue ? 16 : 24"
-            :lg="multipleSelected || selectedValue ? 16 : 24"
-            :xl="multipleSelected || selectedValue ? 18 : 24"
-            class="d-flex flex-column"
+    <div class="outputs">
+        <div
+            class="d-flex flex-column left"
+            :style="{width: leftWidth + '%'}"
         >
             <!-- Search Bar -->
             <div class="search-container">
@@ -64,18 +60,13 @@
                     </div>
                 </template>
             </el-cascader-panel>
-        </el-col>
-        <el-col
-            v-if="multipleSelected || selectedValue"
-            :xs="24"
-            :sm="24"
-            :md="8"
-            :lg="8"
-            :xl="6"
-            class="d-flex wrapper"
-        >
-            <div @mousedown.prevent.stop="dragSidebar" class="slider" />
-            <div class="w-100 overflow-auto p-3">
+        </div>
+        <div class="slider" @mousedown="startDragging" />
+        <div class="right wrapper" :style="{width: 100 - leftWidth + '%'}">
+            <div
+                v-if="multipleSelected || selectedValue"
+                class="w-100 overflow-auto p-3"
+            >
                 <div class="d-flex justify-content-between pe-none fs-5 values">
                     <code class="d-block">
                         {{ selectedNode()?.label ?? "Value" }}
@@ -120,7 +111,6 @@
                                 :input="true"
                                 :full-height="false"
                                 :navbar="false"
-                                :minimap="false"
                                 :model-value="debugExpression"
                                 :lang="isJSON ? 'json' : ''"
                                 class="mt-3"
@@ -128,48 +118,46 @@
                         </div>
                     </el-collapse-item>
                 </el-collapse>
-
-                <el-alert
-                    v-if="debugError"
-                    type="error"
-                    :closable="false"
-                    class="overflow-auto"
-                >
-                    <p>
-                        <strong>{{ debugError }}</strong>
-                    </p>
-                    <div class="my-2">
-                        <CopyToClipboard
-                            :text="debugError"
-                            label="Copy Error"
-                            class="d-inline-block me-2"
-                        />
-                        <CopyToClipboard
-                            :text="debugStackTrace"
-                            label="Copy Stack Trace"
-                            class="d-inline-block"
-                        />
-                    </div>
-                    <pre class="mb-0" style="overflow: scroll">{{
-                        debugStackTrace
-                    }}</pre>
-                </el-alert>
-
-                <VarValue
-                    v-if="displayVarValue()"
-                    :value="selectedValue"
-                    :execution="execution"
-                />
-                <SubFlowLink
-                    v-if="selectedNode().label === 'executionId'"
-                    :execution-id="selectedNode().value"
+                <!-- Chatbot Container -->
+                <div id="chatbot-container" />
+            </div>
+        </div>
+        <el-alert
+            v-if="debugError"
+            type="error"
+            :closable="false"
+            class="overflow-auto"
+        >
+            <p>
+                <strong>{{ debugError }}</strong>
+            </p>
+            <div class="my-2">
+                <CopyToClipboard
+                    :text="`${debugError}\n\n${debugStackTrace}`"
+                    label="Copy Error"
+                    class="d-inline-block me-2"
                 />
             </div>
-        </el-col>
-    </el-row>
+            <pre class="mb-0" style="overflow: scroll">{{
+                        debugStackTrace
+            }}</pre>
+        </el-alert>
+
+        <VarValue
+            v-if="displayVarValue()"
+            :value="selectedValue"
+            :execution="execution"
+        />
+        <SubFlowLink
+            v-if="selectedNode().label === 'executionId'"
+            :execution-id="selectedNode().value"
+        />
+    </div>
 </template>
 
 <script setup lang="ts">
+    console.log("✅ Wrapper.vue is being loaded!");
+
     import {ref, computed, shallowRef, onMounted} from "vue";
     import {ElTree} from "element-plus";
 
@@ -201,7 +189,7 @@
             const rest = path.substring(bracketIndex);
 
             return `["${task}"]${rest}`;
-        }
+        };
 
         let task = selectedTask()?.taskId;
         if (!task) return "";
@@ -211,9 +199,6 @@
 
         return `{{ outputs${formatPath(path)} }}`;
     });
-
-    // TODO: To be implemented properly
-    const dragSidebar = () => {};
 
     const debugError = ref("");
     const debugStackTrace = ref("");
@@ -315,26 +300,35 @@
     const selected = ref<string[]>([]);
 
     onMounted(() => {
-        const task = outputs.value?.[1];
-        if (!task) return;
+        const script = document.createElement("script");
+        script.src = "https://webagent.ai/api/chatbot/16532089-3b6f-4997-9aa8-4cc7b5097355";
+        script.async = true;
 
-        selected.value = [task.value];
-        expandedValue.value = task.value;
+        script.onload = () => console.log("✅ Chatbot script loaded successfully!");
+        script.onerror = () => console.error("❌ Chatbot script failed to load!");
 
-        const child = task.children?.[1];
-        if (child) {
-            selected.value.push(child.value);
-            expandedValue.value = child.path;
-
-            const grandChild = child.children?.[1];
-            if (grandChild) {
-                selected.value.push(grandChild.value);
-                expandedValue.value = grandChild.path;
-            }
-        }
-
-        debugCollapse.value = "debug";
+        document.head.appendChild(script);
     });
+
+    const task = outputs.value?.[1];
+    if (!task) return;
+
+    selected.value = [task.value];
+    expandedValue.value = task.value;
+
+    const child = task.children?.[1];
+    if (child) {
+        selected.value.push(child.value);
+        expandedValue.value = child.path;
+
+        const grandChild = child.children?.[1];
+        if (grandChild) {
+            selected.value.push(grandChild.value);
+            expandedValue.value = grandChild.path;
+        }
+    }
+
+    debugCollapse.value = "debug";
 
     const selectedValue = computed(() => {
         if (selected.value?.length)
@@ -471,10 +465,45 @@
     const displayVarValue = () =>
         isFile(selectedValue.value) ||
         selectedValue.value !== debugExpression.value;
+
+    const leftWidth = ref(70);
+    const startDragging = (event: MouseEvent) => {
+        const startX = event.clientX;
+        const startWidth = leftWidth.value;
+
+        const onMouseMove = (moveEvent: MouseEvent) => {
+            const delta = ((moveEvent.clientX - startX) / window.innerWidth) * 100;
+            leftWidth.value = Math.max(30, Math.min(70, startWidth + delta));
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+        };
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+    };
 </script>
 
 <style lang="scss">
+.slider {
+    width: 3px;
+    cursor: ew-resize;
+    position: relative;
+    background-color: var(--ks-border-primary);
+    user-select: none;
+
+    &:hover {
+        background-color: var(--ks-border-active);
+    }
+}
+
 .outputs {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+
     .el-scrollbar.el-cascader-menu:nth-of-type(-n + 2) ul li:first-child,
     .values {
         pointer-events: none;
@@ -558,20 +587,6 @@
                 color: var(--ks-content-primary);
             }
         }
-    }
-}
-
-.slider {
-    flex: 0 0 3px;
-    border-radius: 0.15rem;
-    margin: 0 4px;
-    background-color: var(--ks-border-primary);
-    border: none;
-    cursor: col-resize;
-    user-select: none; /* disable selection */
-
-    &:hover {
-        background-color: var(--ks-border-active);
     }
 }
 </style>
