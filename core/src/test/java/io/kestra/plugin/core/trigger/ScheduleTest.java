@@ -248,12 +248,12 @@ class ScheduleTest {
     shouldReturnExecutionForBackFillWhenCurrentDateIsAfterScheduleDate() throws Exception {
         // Given
         Schedule trigger = Schedule.builder().id("schedule").cron(TEST_CRON_EVERYDAY_AT_8).build();
-        ZonedDateTime now = ZonedDateTime.now();
-        TriggerContext triggerContext = triggerContext(now, trigger).toBuilder()
+        ZonedDateTime now = ZonedDateTime.of(2025, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+        TriggerContext triggerContext = triggerContext(ZonedDateTime.now(), trigger).toBuilder()
             .backfill(Backfill
                 .builder()
-                .currentDate(ZonedDateTime.now().with(LocalTime.MIN).plus(Duration.ofHours(8)))
-                .end(ZonedDateTime.now().with(LocalTime.MAX))
+                .currentDate(now.with(LocalTime.MIN).plus(Duration.ofHours(8)))
+                .end(now.with(LocalTime.MAX))
                 .build()
             )
             .build();
@@ -454,7 +454,6 @@ class ScheduleTest {
         assertThat(dateFromVars(vars.get("previous"), date), is(date.minusMonths(1)));
     }
 
-    //todo
     @Test
     void timezone_with_backfile() throws Exception {
         Schedule trigger = Schedule.builder()
@@ -466,12 +465,8 @@ class ScheduleTest {
         TriggerContext triggerContext = triggerContext(ZonedDateTime.now(), trigger).toBuilder()
             .backfill(Backfill
                 .builder()
-                .currentDate(ZonedDateTime.now(ZoneId.of("America/New_York"))
-                    .minusDays(1L)
-                    .with(LocalTime.MIN)
-                    .plus(Duration.ofHours(8))
-                    .withZoneSameInstant(ZoneId.systemDefault()))
-                .end(ZonedDateTime.now().with(LocalTime.MAX))
+                .currentDate(ZonedDateTime.parse("2025-01-15T08:00-05:00[America/New_York]"))
+                .end(ZonedDateTime.parse("2025-01-16T07:00-05:00[America/New_York]"))
                 .build()
             )
             .build();
