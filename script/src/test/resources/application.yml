@@ -5,3 +5,52 @@ kestra:
       base-path: /tmp/unittest
   queue:
     type: memory
+kestra:
+  storage:
+    type: local
+    local:
+      base-path: /tmp/unittest
+
+  queue:
+    type: memory
+
+  # Enable JSON Support
+  server:
+    serialization:
+      content-types:
+        - application/yaml
+        - application/json  # Add JSON support
+        - text/yaml
+        - text/x-yaml
+    
+    # Endpoint configuration
+    endpoints:
+      formats:
+        - yaml
+        - json  # Enable JSON format
+
+  # Content negotiation setup
+  http:
+    content-negotiation:
+      default-format: yaml
+      supported-formats:
+        - yaml
+        - json
+
+  # Parser configuration
+  parsers:
+    flow:
+      enabled-formats:
+        - yaml
+        - json
+    template:
+      enabled-formats:
+        - yaml
+        - json
+
+  # If Kestra uses Spring, this helps JSON parsing
+  spring:
+    http:
+      converters:
+        preferred-json-mapper: jackson
+
